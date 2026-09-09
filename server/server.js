@@ -20,7 +20,7 @@ const JWT_SECRET =
 
 const FRONTEND_URL =
     process.env.FRONTEND_URL ||
-    "https://nexusai-platform-dev.netlify.app";
+    "https://apexxxaiiii.vercel.app/";
 
 const GOOGLE_CALLBACK_URL =
     process.env.GOOGLE_CALLBACK_URL ||
@@ -62,7 +62,7 @@ const corsOptions = {
     origin: [
         "http://localhost:5500",
         "http://127.0.0.1:5500",
-        "https://nexusai-platform-dev.netlify.app"
+        "https://apexxxaiiii.vercel.app/"
     ],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
