@@ -114,10 +114,18 @@ document.addEventListener("DOMContentLoaded", () => {
     renderChatList();
 
     /*
-     * Si no existe ningún chat, mostramos la pantalla
-     * inicial de bienvenida.
+     * Si la URL trae /c/<id>, abrimos ese chat.
+     * Si no existe (o no hay id), mostramos la
+     * pantalla inicial de bienvenida.
      */
-    showWelcome();
+    const urlChatId = getChatIdFromUrl();
+
+    if (urlChatId && chats.some((chat) => chat.id === urlChatId)) {
+        openChat(urlChatId, { updateUrl: false });
+    } else {
+        showWelcome();
+    }
+
     loadUser();
 });
 
@@ -290,6 +298,7 @@ function createNewChat() {
     renderChatList();
 
     showChat(chat);
+    updateUrlForChat(chat.id);
 
     messageInput.value = "";
 
@@ -1583,7 +1592,7 @@ function renderChatList(filter = "") {
    OPEN CHAT
    ========================================================= */
 
-function openChat(id) {
+function openChat(id, options = {}) {
 
     const chat =
         chats.find(
@@ -1597,6 +1606,10 @@ function openChat(id) {
     currentChatId = id;
 
     showChat(chat);
+
+    if (options.updateUrl !== false) {
+        updateUrlForChat(id);
+    }
 
     messageInput.focus();
 }
@@ -1788,6 +1801,7 @@ function deleteChat(id) {
             null;
 
         showWelcome();
+        updateUrlForChat(null);
     }
 
 
@@ -1835,6 +1849,7 @@ function clearAllChats() {
     renderChatList();
 
     showWelcome();
+    updateUrlForChat(null);
 
     closeDeleteModal();
 
@@ -2261,13 +2276,63 @@ function getCurrentChat() {
 }
 
 
+/* =========================================================
+   URL DEL CHAT (/c/<id>)
+   ========================================================= */
+
+function getChatIdFromUrl() {
+
+    const match =
+        window.location.pathname.match(
+            /^\/c\/([a-f0-9-]+)$/i
+        );
+
+    return match ? match[1] : null;
+}
+
+
+function updateUrlForChat(id) {
+
+    const newPath =
+        id ? `/c/${id}` : "/app.html";
+
+    if (window.location.pathname === newPath) return;
+
+    window.history.pushState(
+        { chatId: id || null },
+        "",
+        newPath
+    );
+}
+
+
+window.addEventListener("popstate", () => {
+
+    const id = getChatIdFromUrl();
+
+    if (id) {
+        openChat(id, { updateUrl: false });
+    } else {
+        currentChatId = null;
+        showWelcome();
+    }
+});
+
+
 function generateId() {
 
-    return (
-        Date.now().toString(36) +
-        Math.random()
-            .toString(36)
-            .substring(2, 9)
+    if (crypto?.randomUUID) {
+        return crypto.randomUUID();
+    }
+
+    // Alternativa por si el navegador no soporta crypto.randomUUID
+    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
+        /[xy]/g,
+        (c) => {
+            const r = (Math.random() * 16) | 0;
+            const v = c === "x" ? r : (r & 0x3) | 0x8;
+            return v.toString(16);
+        }
     );
 }
 
