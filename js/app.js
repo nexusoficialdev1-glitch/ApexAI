@@ -738,7 +738,7 @@ function appendMessage(message) {
         avatar.textContent = getUserInitial();
     } else {
         avatar.innerHTML =
-            `<img src="img/icon.png" alt="NexusAI" style="width:100%;height:100%;object-fit:cover;border-radius:9px;">`;
+            `<img src="img/icon.png" alt="ApexAI" style="width:100%;height:100%;object-fit:cover;border-radius:9px;">`;
     }
 
 
@@ -754,7 +754,7 @@ function appendMessage(message) {
     role.textContent =
         message.role === "user"
             ? getUserName()
-            : "NexusAI";
+            : "ApexAi";
 
 
     const text = document.createElement("div");
@@ -2515,12 +2515,12 @@ modalBackdrop?.addEventListener(
    ========================================================= */
 
 console.log(
-    "%cNexusAI",
+    "%cApexAI",
     "color:#2563eb;font-size:20px;font-weight:700;"
 );
 
 console.log(
-    "NexusAI frontend inicializado correctamente."
+    "ApexAi frontend inicializado correctamente."
 );
 
 /* =========================================
