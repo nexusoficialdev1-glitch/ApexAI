@@ -1367,7 +1367,7 @@ function appendTyping() {
         "message-role";
 
     role.textContent =
-        "NexusAI";
+        "ApexAI";
 
 
     const typing =
@@ -2414,7 +2414,7 @@ async function loadUser() {
         }
 
         if (userEmail) {
-            userEmail.textContent = user.email || "NexusAI";
+            userEmail.textContent = user.email || "ApexAI";
         }
 
         if (userAvatar) {
