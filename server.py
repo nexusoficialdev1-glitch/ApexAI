@@ -71,7 +71,7 @@ else:
 
 MODEL_NAME = os.environ.get(
     "OLLAMA_MODEL",
-    "gemma4:31b-cloud"
+    "qwen3.8-flash-next"
 )
 
 OLLAMA_API_KEY = os.environ.get(
