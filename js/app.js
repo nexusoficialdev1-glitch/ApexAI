@@ -96,6 +96,82 @@ let selectedFile = null;
 
 let isGenerating = false;
 
+/* =========================================================
+   IMAGE STORAGE — INDEXEDDB
+   ========================================================= */
+
+const IMAGE_DB_NAME = "nexusai_images";
+const IMAGE_DB_VERSION = 1;
+const IMAGE_STORE_NAME = "images";
+
+function openImageDB() {
+    return new Promise((resolve, reject) => {
+        const request = indexedDB.open(
+            IMAGE_DB_NAME,
+            IMAGE_DB_VERSION
+        );
+
+        request.onupgradeneeded = () => {
+            const db = request.result;
+
+            if (!db.objectStoreNames.contains(IMAGE_STORE_NAME)) {
+                db.createObjectStore(IMAGE_STORE_NAME);
+            }
+        };
+
+        request.onsuccess = () => {
+            resolve(request.result);
+        };
+
+        request.onerror = () => {
+            reject(request.error);
+        };
+    });
+}
+
+function saveImage(messageId, file) {
+    return openImageDB().then((db) => {
+        return new Promise((resolve, reject) => {
+            const transaction = db.transaction(
+                IMAGE_STORE_NAME,
+                "readwrite"
+            );
+
+            const store = transaction.objectStore(
+                IMAGE_STORE_NAME
+            );
+
+            const request = store.put(file, messageId);
+
+            request.onsuccess = () => resolve();
+            request.onerror = () => reject(request.error);
+        });
+    });
+}
+
+function getImage(messageId) {
+    return openImageDB().then((db) => {
+        return new Promise((resolve, reject) => {
+            const transaction = db.transaction(
+                IMAGE_STORE_NAME,
+                "readonly"
+            );
+
+            const store = transaction.objectStore(
+                IMAGE_STORE_NAME
+            );
+
+            const request = store.get(messageId);
+
+            request.onsuccess = () => {
+                resolve(request.result || null);
+            };
+
+            request.onerror = () => reject(request.error);
+        });
+    });
+}
+
 
 /* =========================================================
    INITIALIZE
@@ -318,25 +394,21 @@ async function sendMessage() {
     if (isGenerating) return;
 
     const text = messageInput.value.trim();
-const file = selectedFile;
+    const file = selectedFile;
 
-if (!text && !file) return;
-
+    if (!text && !file) return;
 
     /* Crear chat automáticamente */
     if (!currentChatId) {
         createNewChat();
     }
 
-
     const chat = getCurrentChat();
 
     if (!chat) return;
 
-
     /* Ocultar bienvenida */
     hideWelcome();
-
 
     /* Mensaje del usuario */
     const userMessage = {
@@ -348,6 +420,21 @@ if (!text && !file) return;
 
     chat.messages.push(userMessage);
 
+    /* Guardar imagen en IndexedDB */
+    if (file) {
+        try {
+            await saveImage(userMessage.id, file);
+        } catch (error) {
+            console.error(
+                "No se pudo guardar la imagen:",
+                error
+            );
+
+            showToast(
+                "No se pudo guardar la imagen"
+            );
+        }
+    }
 
     /* Primer mensaje = título */
     if (
@@ -357,16 +444,19 @@ if (!text && !file) return;
         chat.title = createChatTitle(text);
     }
 
-
     chat.updatedAt = Date.now();
 
     saveChats();
     renderChatList();
 
-    const imageUrl = file ? URL.createObjectURL(file) : null;
+    /* Mostrar imagen inmediatamente */
+    let imageUrl = null;
 
-appendMessage(userMessage, imageUrl);
+    if (file) {
+        imageUrl = URL.createObjectURL(file);
+    }
 
+    appendMessage(userMessage, imageUrl);
 
     /* Limpiar input */
     messageInput.value = "";
@@ -374,14 +464,15 @@ appendMessage(userMessage, imageUrl);
     autoResizeTextarea();
     updateSendButton();
 
-
     /* Archivo */
-
     clearAttachment();
 
-
     /* Generar respuesta */
-    await generateResponse(chat, text, file);
+    await generateResponse(
+        chat,
+        text,
+        file
+    );
 }
 
 
@@ -730,111 +821,106 @@ function appendMessage(message, imageUrl = null) {
 
     if (!messages) return;
 
-
     const article = document.createElement("article");
 
     article.className =
         `message ${message.role === "user" ? "user" : "assistant"}`;
 
-
     const avatar = document.createElement("div");
 
     avatar.className = "message-avatar";
 
-
     if (message.role === "user") {
-        avatar.textContent = getUserInitial();
-    } else {
-        avatar.innerHTML =
-            `<img src="/img/icon.png" alt="ApexAI" style="width:100%;height:100%;object-fit:cover;border-radius:9px;">`;
-    }
 
+        avatar.textContent =
+            getUserInitial();
+
+    } else {
+
+        avatar.innerHTML =
+            `<img src="/img/icon.png"
+                alt="ApexAI"
+                style="width:100%;height:100%;object-fit:cover;border-radius:9px;">`;
+    }
 
     const content = document.createElement("div");
 
-    content.className = "message-content";
-
+    content.className =
+        "message-content";
 
     const role = document.createElement("div");
 
-    role.className = "message-role";
+    role.className =
+        "message-role";
 
     role.textContent =
         message.role === "user"
             ? getUserName()
             : "ApexAi";
 
+    content.appendChild(role);
 
-    const text = document.createElement("div");
+    /* Imagen */
+    if (
+        imageUrl &&
+        message.role === "user"
+    ) {
 
-    text.className = "message-text";
+        const image =
+            document.createElement("img");
+
+        image.className =
+            "message-image";
+
+        image.src =
+            imageUrl;
+
+        image.alt =
+            "Imagen adjunta";
+
+        image.addEventListener(
+            "click",
+            () => {
+                window.open(
+                    imageUrl,
+                    "_blank"
+                );
+            }
+        );
+
+        content.appendChild(image);
+    }
+
+    /* Texto */
+    const text =
+        document.createElement("div");
+
+    text.className =
+        "message-text";
 
     renderMessageContent(
         text,
         message.content
     );
 
-
-    content.appendChild(role);
     content.appendChild(text);
 
-    content.appendChild(role);
+    /* Acciones del asistente */
+    if (
+        message.role === "assistant"
+    ) {
 
-if (imageUrl && message.role === "user") {
-    const image = document.createElement("img");
-
-    image.className = "message-image";
-    image.src = imageUrl;
-    image.alt = "Imagen adjunta";
-
-    image.addEventListener("click", () => {
-        window.open(imageUrl, "_blank");
-    });
-
-    content.appendChild(image);
-}
-
-content.appendChild(text);
-
-
-    /* Acciones (copiar / like / dislike) — solo en respuestas del asistente */
-    if (message.role === "assistant") {
-        content.appendChild(createMessageActions(message));
+        content.appendChild(
+            createMessageActions(message)
+        );
     }
-
 
     article.appendChild(avatar);
     article.appendChild(content);
 
     messages.appendChild(article);
 
-
     scrollToBottom();
-}
-
-function appendUserImage(imageUrl) {
-    const messagesContainer =
-        document.querySelector(".messages") ||
-        document.querySelector("#messages") ||
-        document.querySelector(".chat-messages");
-
-    if (!messagesContainer) return;
-
-    const message = document.createElement("div");
-    message.className = "message user-message image-message";
-
-    const image = document.createElement("img");
-    image.src = imageUrl;
-    image.alt = "Imagen adjunta";
-
-    image.addEventListener("click", () => {
-        window.open(imageUrl, "_blank");
-    });
-
-    message.appendChild(image);
-    messagesContainer.appendChild(message);
-
-    messagesContainer.scrollTop = messagesContainer.scrollHeight;
 }
 
 
@@ -1456,7 +1542,7 @@ function appendTyping() {
    CHAT DISPLAY
    ========================================================= */
 
-function showChat(chat) {
+async function showChat(chat) {
 
     currentChatId = chat.id;
 
@@ -1464,11 +1550,36 @@ function showChat(chat) {
 
     messages.innerHTML = "";
 
+    for (const message of chat.messages) {
 
-    chat.messages.forEach((message) => {
-        appendMessage(message);
-    });
+        let imageUrl = null;
 
+        if (message.role === "user") {
+
+            try {
+
+                const imageFile =
+                    await getImage(message.id);
+
+                if (imageFile) {
+                    imageUrl =
+                        URL.createObjectURL(imageFile);
+                }
+
+            } catch (error) {
+
+                console.error(
+                    "No se pudo cargar la imagen:",
+                    error
+                );
+            }
+        }
+
+        appendMessage(
+            message,
+            imageUrl
+        );
+    }
 
     renderChatList();
 
