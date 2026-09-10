@@ -968,9 +968,25 @@ function createMessageActions(message) {
     copyBtn.setAttribute("aria-label", "Copiar mensaje");
     copyBtn.innerHTML = `<i class="fa-regular fa-copy"></i>`;
 
-    copyBtn.addEventListener("click", () => {
+        copyBtn.addEventListener("click", () => {
         copyMessageText(message.content, copyBtn);
     });
+
+
+    /* Escuchar (Texto a voz) */
+    const speakBtn = document.createElement("button");
+    speakBtn.type = "button";
+    speakBtn.className = "message-action-btn";
+    speakBtn.title = "Escuchar";
+    speakBtn.setAttribute("aria-label", "Escuchar mensaje");
+    speakBtn.innerHTML = `<i class="fa-solid fa-volume-high"></i>`;
+
+    speakBtn.addEventListener("click", () => {
+        toggleSpeakMessage(message.content, speakBtn);
+    });
+
+
+    /* Like */
 
 
     /* Like */
@@ -1007,7 +1023,8 @@ function createMessageActions(message) {
     });
 
 
-    actions.appendChild(copyBtn);
+        actions.appendChild(copyBtn);
+    actions.appendChild(speakBtn);
     actions.appendChild(likeBtn);
     actions.appendChild(dislikeBtn);
 
@@ -1092,6 +1109,69 @@ function copyMessageText(content, button) {
     }
 }
 
+/* =========================================================
+   TEXTO A VOZ (LEER MENSAJE)
+   ========================================================= */
+
+let currentSpeakUtterance = null;
+let currentSpeakButton = null;
+
+function stripMarkdownForSpeech(text) {
+    return String(text)
+        .replace(/```[\s\S]*?```/g, " código de ejemplo. ")
+        .replace(/`([^`]+)`/g, "$1")
+        .replace(/^#{1,6}\s+/gm, "")
+        .replace(/\*\*([^*]+)\*\*/g, "$1")
+        .replace(/__([^_]+)__/g, "$1")
+        .replace(/\*([^*]+)\*/g, "$1")
+        .replace(/_([^_]+)_/g, "$1")
+        .replace(/~~([^~]+)~~/g, "$1")
+        .replace(/!\[([^\]]*)\]\([^)]+\)/g, "$1")
+        .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
+        .replace(/^\s*>\s?/gm, "")
+        .replace(/^\s*[-*+]\s+/gm, "")
+        .replace(/^\s*\d+\.\s+/gm, "")
+        .replace(/\n{2,}/g, ". ")
+        .replace(/\n/g, " ")
+        .trim();
+}
+
+function toggleSpeakMessage(content, button) {
+    if (!("speechSynthesis" in window)) {
+        showToast("Tu navegador no soporta lectura en voz alta");
+        return;
+    }
+
+    const icon = button.querySelector("i");
+
+    if (currentSpeakButton === button && window.speechSynthesis.speaking) {
+        window.speechSynthesis.cancel();
+        return;
+    }
+
+    window.speechSynthesis.cancel();
+
+    const cleanText = stripMarkdownForSpeech(content);
+    if (!cleanText) return;
+
+    const utterance = new SpeechSynthesisUtterance(cleanText);
+    utterance.lang = "es-ES";
+    utterance.rate = 1;
+
+    utterance.onstart = () => {
+        if (icon) icon.className = "fa-solid fa-stop";
+        currentSpeakButton = button;
+    };
+
+    utterance.onend = utterance.onerror = () => {
+        if (icon) icon.className = "fa-solid fa-volume-high";
+        currentSpeakButton = null;
+        currentSpeakUtterance = null;
+    };
+
+    currentSpeakUtterance = utterance;
+    window.speechSynthesis.speak(utterance);
+}
 
 function fallbackCopy(text, callback) {
 
