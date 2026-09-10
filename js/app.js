@@ -363,7 +363,9 @@ if (!text && !file) return;
     saveChats();
     renderChatList();
 
-    appendMessage(userMessage);
+    const imageUrl = file ? URL.createObjectURL(file) : null;
+
+appendMessage(userMessage, imageUrl);
 
 
     /* Limpiar input */
@@ -724,7 +726,7 @@ function demoResponse(text) {
    RENDER MESSAGE
    ========================================================= */
 
-function appendMessage(message) {
+function appendMessage(message, imageUrl = null) {
 
     if (!messages) return;
 
@@ -776,6 +778,24 @@ function appendMessage(message) {
     content.appendChild(role);
     content.appendChild(text);
 
+    content.appendChild(role);
+
+if (imageUrl && message.role === "user") {
+    const image = document.createElement("img");
+
+    image.className = "message-image";
+    image.src = imageUrl;
+    image.alt = "Imagen adjunta";
+
+    image.addEventListener("click", () => {
+        window.open(imageUrl, "_blank");
+    });
+
+    content.appendChild(image);
+}
+
+content.appendChild(text);
+
 
     /* Acciones (copiar / like / dislike) — solo en respuestas del asistente */
     if (message.role === "assistant") {
@@ -790,6 +810,31 @@ function appendMessage(message) {
 
 
     scrollToBottom();
+}
+
+function appendUserImage(imageUrl) {
+    const messagesContainer =
+        document.querySelector(".messages") ||
+        document.querySelector("#messages") ||
+        document.querySelector(".chat-messages");
+
+    if (!messagesContainer) return;
+
+    const message = document.createElement("div");
+    message.className = "message user-message image-message";
+
+    const image = document.createElement("img");
+    image.src = imageUrl;
+    image.alt = "Imagen adjunta";
+
+    image.addEventListener("click", () => {
+        window.open(imageUrl, "_blank");
+    });
+
+    message.appendChild(image);
+    messagesContainer.appendChild(message);
+
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
 }
 
 
@@ -2030,20 +2075,27 @@ function updateThemeIcon(isDark) {
 /* =========================================================
    FILES
    ========================================================= */
-
 function handleFile(event) {
-
-    const file =
-        event.target.files?.[0];
-
+    const file = event.target.files?.[0];
 
     if (!file) return;
 
+    if (!file.type.startsWith("image/")) {
+        showToast("Solo puedes adjuntar imágenes");
+        clearAttachment();
+        return;
+    }
+
+    if (file.size > 10 * 1024 * 1024) {
+        showToast("La imagen no puede superar los 10 MB");
+        clearAttachment();
+        return;
+    }
 
     selectedFile = file;
 
-
     renderAttachment(file);
+    updateSendButton();
 }
 
 
@@ -2164,15 +2216,10 @@ function autoResizeTextarea() {
 function updateSendButton() {
     if (!sendBtn) return;
 
-    const hasText =
-        messageInput?.value.trim().length > 0;
+    const hasText = messageInput?.value.trim().length > 0;
+    const hasFile = !!selectedFile;
 
-    const hasFile =
-        !!selectedFile;
-
-    sendBtn.disabled =
-        (!hasText && !hasFile) ||
-        isGenerating;
+    sendBtn.disabled = (!hasText && !hasFile) || isGenerating;
 }
 
 
