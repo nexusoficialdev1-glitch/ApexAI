@@ -2162,17 +2162,16 @@ function autoResizeTextarea() {
 
 
 function updateSendButton() {
-
     if (!sendBtn) return;
 
-
     const hasText =
-        messageInput?.value.trim()
-            .length > 0;
+        messageInput?.value.trim().length > 0;
 
+    const hasFile =
+        !!selectedFile;
 
     sendBtn.disabled =
-        !hasText ||
+        (!hasText && !hasFile) ||
         isGenerating;
 }
 
