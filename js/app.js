@@ -318,8 +318,9 @@ async function sendMessage() {
     if (isGenerating) return;
 
     const text = messageInput.value.trim();
+const file = selectedFile;
 
-    if (!text) return;
+if (!text && !file) return;
 
 
     /* Crear chat automáticamente */
@@ -373,7 +374,6 @@ async function sendMessage() {
 
 
     /* Archivo */
-    const file = selectedFile;
 
     clearAttachment();
 
