@@ -493,44 +493,30 @@ async function generateResponse(chat, userText, file) {
 
     try {
 
-        let responseText;
+        let apiResult;
 
+if (API_URL) {
+    apiResult = await requestAPI(
+        chat,
+        userText,
+        file
+    );
+} else {
+    apiResult = {
+        text: await demoResponse(userText),
+        images: []
+    };
+}
 
-        /*
-         * Si API_URL está configurada, intenta utilizar
-         * el backend real.
-         */
-        if (API_URL) {
+typingElement.remove();
 
-            responseText = await requestAPI(
-                chat,
-                userText,
-                file
-            );
-
-        } else {
-
-            /*
-             * Modo demo.
-             *
-             * Esto permite probar la interfaz antes de
-             * conectar el backend.
-             */
-            responseText = await demoResponse(
-                userText
-            );
-        }
-
-
-        typingElement.remove();
-
-
-        const assistantMessage = {
-            id: generateId(),
-            role: "assistant",
-            content: responseText,
-            createdAt: Date.now()
-        };
+const assistantMessage = {
+    id: generateId(),
+    role: "assistant",
+    content: apiResult.text,
+    images: apiResult.images,
+    createdAt: Date.now()
+};
 
 
         chat.messages.push(assistantMessage);
@@ -634,7 +620,11 @@ async function requestAPI(chat, text, file) {
 
     const data = await response.json();
 
-    return extractAPIResponse(data);
+return {
+    text: extractAPIResponse(data),
+    images: Array.isArray(data.images) ? data.images : []
+};
+
 }
 
 
@@ -898,6 +888,33 @@ function appendMessage(message, imageUrl = null) {
     );
 
     content.appendChild(text);
+
+    if (
+    message.role === "assistant" &&
+    Array.isArray(message.images) &&
+    message.images.length > 0
+) {
+    const gallery = document.createElement("div");
+
+    gallery.className = "assistant-image-gallery";
+
+    message.images.forEach(item => {
+        const img = document.createElement("img");
+
+        img.src = item.url;
+        img.alt = item.title || "Imagen";
+        img.loading = "lazy";
+        img.className = "assistant-image";
+
+        img.addEventListener("click", () => {
+            openImageViewer(item.url);
+        });
+
+        gallery.appendChild(img);
+    });
+
+    content.appendChild(gallery);
+}
 
     /* Acciones del asistente */
     if (
