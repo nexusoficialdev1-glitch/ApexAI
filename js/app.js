@@ -3465,7 +3465,7 @@ async function handleLogout() {
     localStorage.removeItem("nexusai_token");
     localStorage.removeItem("nexusai_user");
 
-    window.location.href = "index.html";
+    window.location.href = "/index.html";
 }
 
 
