@@ -487,7 +487,6 @@ async function generateResponse(chat, userText, file) {
    ========================================================= */
 
 async function requestAPI(chat, text, file) {
-
     const payload = {
         message: text,
         conversation_id: chat.id,
@@ -495,84 +494,82 @@ async function requestAPI(chat, text, file) {
         custom_instructions: getCustomInstructions()
     };
 
-
-    /*
-     * Si hay archivo, se envía como FormData.
-     */
+    // Si hay una imagen, convertirla a Base64
     if (file) {
-
-        const formData = new FormData();
-
-        formData.append(
-            "message",
-            text
-        );
-
-        formData.append(
-            "conversation_id",
-            chat.id
-        );
-
-        formData.append(
-            "history",
-            JSON.stringify(chat.messages)
-        );
-
-        formData.append(
-            "file",
-            file
-        );
-
-
-        const response = await fetch(
-            API_URL,
-            {
-                method: "POST",
-                body: formData
-            }
-        );
-
-
-        if (!response.ok) {
-            throw new Error(
-                `API error: ${response.status}`
-            );
+        if (!file.type.startsWith("image/")) {
+            throw new Error("Solo se pueden adjuntar imágenes.");
         }
 
+        if (file.size > 10 * 1024 * 1024) {
+            throw new Error("La imagen no puede superar los 10 MB.");
+        }
 
-        const data = await response.json();
+        const imageBase64 = await fileToBase64(file);
 
-        return extractAPIResponse(data);
+        // Crear una copia del historial para no modificar el original
+        payload.history = chat.messages.map(message => ({
+            role: message.role,
+            content: message.content,
+            ...(message.images ? { images: message.images } : {})
+        }));
+
+        // Agregar la imagen al último mensaje del usuario
+        const lastMessage = payload.history[payload.history.length - 1];
+
+        if (lastMessage && lastMessage.role === "user") {
+            lastMessage.images = [imageBase64];
+        }
     }
 
-
-    /*
-     * Petición normal JSON.
-     */
     const response = await fetch(
         API_URL,
         {
             method: "POST",
-
             headers: {
                 "Content-Type": "application/json"
             },
-
             body: JSON.stringify(payload)
         }
     );
 
-
     if (!response.ok) {
+        const errorText = await response.text().catch(() => "");
         throw new Error(
-            `API error: ${response.status}`
+            `API error: ${response.status}${errorText ? ` - ${errorText}` : ""}`
         );
     }
-
 
     const data = await response.json();
 
     return extractAPIResponse(data);
+}
+
+
+// Convierte un archivo a Base64
+function fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+
+        reader.onload = () => {
+            const result = reader.result;
+
+            // Ollama necesita solamente el Base64, sin "data:image/...;base64,"
+            const base64 = result.split(",")[1];
+
+            if (!base64) {
+                reject(new Error("No se pudo procesar la imagen."));
+                return;
+            }
+
+            resolve(base64);
+        };
+
+        reader.onerror = () => {
+            reject(new Error("No se pudo leer la imagen."));
+        };
+
+        reader.readAsDataURL(file);
+    });
 }
 
 
