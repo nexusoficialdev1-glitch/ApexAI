@@ -878,15 +878,9 @@ function appendMessage(message, imageUrl = null) {
         image.alt =
             "Imagen adjunta";
 
-        image.addEventListener(
-            "click",
-            () => {
-                window.open(
-                    imageUrl,
-                    "_blank"
-                );
-            }
-        );
+        image.addEventListener("click", () => {
+    openImageViewer(imageUrl);
+});
 
         content.appendChild(image);
     }
@@ -923,6 +917,38 @@ function appendMessage(message, imageUrl = null) {
     scrollToBottom();
 }
 
+function openImageViewer(imageUrl) {
+    const viewer = document.createElement("div");
+    viewer.className = "image-viewer";
+
+    viewer.innerHTML = `
+        <button class="image-viewer-close" aria-label="Cerrar">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+        <img src="${imageUrl}" alt="Imagen adjunta">
+    `;
+
+    document.body.appendChild(viewer);
+
+    const closeViewer = () => {
+        viewer.remove();
+    };
+
+    viewer.querySelector(".image-viewer-close").addEventListener("click", closeViewer);
+
+    viewer.addEventListener("click", (event) => {
+        if (event.target === viewer) {
+            closeViewer();
+        }
+    });
+
+    document.addEventListener("keydown", function escapeHandler(event) {
+        if (event.key === "Escape") {
+            closeViewer();
+            document.removeEventListener("keydown", escapeHandler);
+        }
+    });
+}
 
 /* =========================================================
    MESSAGE ACTIONS — COPIAR / LIKE / DISLIKE
