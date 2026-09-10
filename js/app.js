@@ -747,7 +747,7 @@ function appendMessage(message) {
         avatar.textContent = getUserInitial();
     } else {
         avatar.innerHTML =
-            `<img src="img/icon.png" alt="ApexAI" style="width:100%;height:100%;object-fit:cover;border-radius:9px;">`;
+            `<img src="/img/icon.png" alt="ApexAI" style="width:100%;height:100%;object-fit:cover;border-radius:9px;">`;
     }
 
 
@@ -1359,7 +1359,7 @@ function appendTyping() {
 
 
     avatar.innerHTML =
-        `<img src="img/icon.png" alt="NexusAI" style="width:100%;height:100%;object-fit:cover;border-radius:9px;">`;
+        `<img src="/img/icon.png" alt="ApexsAI" style="width:100%;height:100%;object-fit:cover;border-radius:9px;">`;
 
 
     const content =
