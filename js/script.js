@@ -1,305 +1,450 @@
-const API_URL = "https://nexus-ai-api-iwqr.onrender.com/api";
+/* =========================================================
+   NEXUSAI — FIREBASE AUTHENTICATION
+   ========================================================= */
+
+/*
+    IMPORTANTE:
+
+    Reemplaza estos valores con los de tu proyecto Firebase.
+
+    Firebase Console
+    → Project settings
+    → Your apps
+    → Web app
+    → Firebase SDK setup
+*/
+
+const firebaseConfig = {
+    apiKey: "AIzaSyBmRqkm8JaPc--aH6TYjyc9F1GjEuA1EL8",
+    authDomain: "apexai-62a71.firebaseapp.com",
+    projectId: "apexai-62a71",
+    storageBucket: "apexai-62a71.firebasestorage.app",
+    messagingSenderId: "124979722890",
+    appId: "1:124979722890:web:0933707c0764c35d768b73",
+    measurementId: "G-75CG03TBS3"
+  };
+
+/* =========================================================
+   FIREBASE
+   ========================================================= */
+
+import {
+    initializeApp
+} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+
+import {
+    getAuth,
+    onAuthStateChanged,
+    signInWithEmailAndPassword,
+    createUserWithEmailAndPassword,
+    GoogleAuthProvider,
+    signInWithPopup,
+    sendPasswordResetEmail,
+    signOut,
+    setPersistence,
+    browserLocalPersistence,
+    browserSessionPersistence,
+    updateProfile
+} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+
+import {
+    getFirestore,
+    doc,
+    setDoc,
+    getDoc,
+    serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+
+
+/* =========================================================
+   INICIALIZAR FIREBASE
+   ========================================================= */
+
+const app = initializeApp(firebaseConfig);
+
+const auth = getAuth(app);
+
+const db = getFirestore(app);
+
+const googleProvider = new GoogleAuthProvider();
+
+googleProvider.setCustomParameters({
+    prompt: "select_account"
+});
+
+
+/* =========================================================
+   ELEMENTOS
+   ========================================================= */
+
+const loginForm =
+    document.getElementById("loginForm");
+
+const registerForm =
+    document.getElementById("registerForm");
+
+
+/* =========================================================
+   CAMBIAR LOGIN / REGISTRO
+   ========================================================= */
+
+function showLogin() {
+
+    if (!loginForm || !registerForm) return;
+
+    registerForm.classList.remove("active");
+
+    loginForm.classList.add("active");
+}
+
+
+function showRegister() {
+
+    if (!loginForm || !registerForm) return;
+
+    loginForm.classList.remove("active");
+
+    registerForm.classList.add("active");
+}
 
 
 /*
-=========================================
-YA HAY SESIÓN ACTIVA — REDIRIGIR A app.html
-=========================================
+    Dejamos las funciones disponibles globalmente
+    por si tu HTML utiliza onclick="showLogin()"
+    o onclick="showRegister()".
 */
 
-(async function redirectIfLoggedIn() {
-
-    const token = localStorage.getItem("nexusai_token");
-
-    if (!token) return;
-
-    try {
-
-        const response = await fetch(
-            `${API_URL}/auth/me`,
-            {
-                method: "GET",
-                credentials: "include",
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            }
-        );
-
-        const data = await response.json();
-
-        if (response.ok && data.success) {
-            window.location.href = "app.html";
-        } else {
-            // Token inválido/expirado: lo limpiamos para
-            // que no se quede intentando en cada visita.
-            localStorage.removeItem("nexusai_token");
-        }
-
-    } catch (error) {
-        console.error("Error verificando sesión:", error);
-    }
-
-})();
-
- 
- 
- const loginForm =
-            document.getElementById("loginForm");
-
-        const registerForm =
-            document.getElementById("registerForm");
+window.showLogin = showLogin;
+window.showRegister = showRegister;
 
 
-        /*
-        =========================================
-        CAMBIAR ENTRE LOGIN / REGISTRO
-        =========================================
-        */
+/* =========================================================
+   MOSTRAR / OCULTAR CONTRASEÑA
+   ========================================================= */
 
-        function showLogin() {
+function togglePassword(id, button) {
 
-            registerForm.classList.remove("active");
+    const input =
+        document.getElementById(id);
 
-            loginForm.classList.add("active");
+    if (!input || !button) return;
 
-        }
-
-
-        function showRegister() {
-
-            loginForm.classList.remove("active");
-
-            registerForm.classList.add("active");
-
-        }
-
-
-        /*
-        =========================================
-        MOSTRAR CONTRASEÑA
-        =========================================
-        */
-
-        function togglePassword(id, button) {
-    const input = document.getElementById(id);
-    const icon = button.querySelector("i");
+    const icon =
+        button.querySelector("i");
 
     if (input.type === "password") {
+
         input.type = "text";
 
-        icon.classList.remove("fa-eye");
-        icon.classList.add("fa-eye-slash");
+        if (icon) {
+
+            icon.classList.remove("fa-eye");
+
+            icon.classList.add("fa-eye-slash");
+
+        }
+
     } else {
+
         input.type = "password";
 
-        icon.classList.remove("fa-eye-slash");
-        icon.classList.add("fa-eye");
+        if (icon) {
+
+            icon.classList.remove("fa-eye-slash");
+
+            icon.classList.add("fa-eye");
+
+        }
+
     }
 }
 
 
-        /*
-        =========================================
-        TOAST
-        =========================================
-        */
-
-        let toastTimer;
-
-        function showToast(message) {
-
-            const toast =
-                document.getElementById("toast");
-
-            const messageElement =
-                document.getElementById("toastMessage");
-
-            messageElement.textContent = message;
-
-            toast.classList.add("show");
-
-            clearTimeout(toastTimer);
-
-            toastTimer = setTimeout(() => {
-
-                toast.classList.remove("show");
-
-            }, 3000);
-
-        }
+window.togglePassword = togglePassword;
 
 
-        /*
-        =========================================
-        LOGIN
-        =========================================
-        */
+/* =========================================================
+   TOAST
+   ========================================================= */
 
-        loginForm.addEventListener(
-            "submit",
-            async function(event) {
-
-                event.preventDefault();
-
-                const email =
-                    document.getElementById("loginEmail").value.trim();
-
-                const password =
-                    document.getElementById("loginPassword").value;
-
-                const remember =
-                    document.getElementById("remember").checked;
+let toastTimer;
 
 
-                if (!email || !password) {
+function showToast(message) {
 
-                    showToast(
-                        "Completa todos los campos."
-                    );
+    const toast =
+        document.getElementById("toast");
 
-                    return;
+    const messageElement =
+        document.getElementById("toastMessage");
 
-                }
+    if (!toast || !messageElement) {
+
+        console.log(message);
+
+        return;
+
+    }
+
+    messageElement.textContent = message;
+
+    toast.classList.add("show");
+
+    clearTimeout(toastTimer);
+
+    toastTimer = setTimeout(() => {
+
+        toast.classList.remove("show");
+
+    }, 3000);
+}
 
 
-                const button =
-                    document.getElementById("loginButton");
+window.showToast = showToast;
 
 
-                button.classList.add("button-loading");
+/* =========================================================
+   TRADUCIR ERRORES DE FIREBASE
+   ========================================================= */
 
-                button.innerHTML =
-                    '<span class="spinner"></span>';
+function getFirebaseErrorMessage(error) {
+
+    const code = error?.code || "";
+
+    switch (code) {
+
+        case "auth/invalid-email":
+            return "El correo electrónico no es válido.";
+
+        case "auth/user-not-found":
+            return "No existe una cuenta con este correo.";
+
+        case "auth/wrong-password":
+            return "Correo o contraseña incorrectos.";
+
+        case "auth/invalid-credential":
+            return "Correo o contraseña incorrectos.";
+
+        case "auth/email-already-in-use":
+            return "Ya existe una cuenta con este correo.";
+
+        case "auth/weak-password":
+            return "La contraseña es demasiado débil.";
+
+        case "auth/too-many-requests":
+            return "Demasiados intentos. Inténtalo nuevamente más tarde.";
+
+        case "auth/popup-closed-by-user":
+            return "Cerraste la ventana de Google.";
+
+        case "auth/popup-blocked":
+            return "El navegador bloqueó la ventana de Google.";
+
+        case "auth/cancelled-popup-request":
+            return "La ventana de inicio de sesión fue cancelada.";
+
+        case "auth/network-request-failed":
+            return "No hay conexión con Firebase.";
+
+        case "auth/operation-not-allowed":
+            return "Este método de inicio de sesión no está habilitado en Firebase.";
+
+        default:
+            console.error("Firebase Auth Error:", error);
+
+            return "Ocurrió un error. Inténtalo nuevamente.";
+    }
+}
 
 
-                try {
+/* =========================================================
+   GUARDAR PERFIL EN FIRESTORE
+   ========================================================= */
 
-                    const response = await fetch(
-                        `${API_URL}/auth/login`,
-                        {
-                            method: "POST",
-                            headers: {
-                                "Content-Type": "application/json"
-                            },
-                            credentials: "include",
-                            body: JSON.stringify({
-                                email,
-                                password,
-                                remember
-                            })
-                        }
-                    );
+async function saveUserProfile(user, extraData = {}) {
 
-                    const data = await response.json();
+    if (!user) return;
 
-                    if (!response.ok || !data.success) {
+    const userRef =
+        doc(db, "users", user.uid);
 
-                        showToast(
-                            data.message ||
-                            "Correo o contraseña incorrectos."
-                        );
+    const userSnapshot =
+        await getDoc(userRef);
 
-                        return;
 
-                    }
+    /*
+        Si el usuario ya existe no destruimos
+        sus datos actuales.
+    */
 
-                    // Guardamos el token para enviarlo como
-                    // Authorization: Bearer en cada petición
-                    // (evita depender solo de la cookie cross-site).
-                    localStorage.setItem(
-                        "nexusai_token",
-                        data.token
-                    );
+    if (userSnapshot.exists()) {
 
-                    window.location.href = "app.html";
+        const existingData =
+            userSnapshot.data();
 
-                } catch (error) {
+        const updateData = {
+            uid: user.uid,
+            email: user.email || "",
+            name:
+                extraData.name ||
+                existingData.name ||
+                user.displayName ||
+                "Usuario",
+            photoURL:
+                user.photoURL ||
+                existingData.photoURL ||
+                "",
+            updatedAt: serverTimestamp()
+        };
 
-                    console.error("Login error:", error);
-
-                    showToast(
-                        "No se pudo conectar con el servidor."
-                    );
-
-                } finally {
-
-                    button.classList.remove("button-loading");
-
-                    button.textContent = "Iniciar sesión";
-
-                }
-
+        await setDoc(
+            userRef,
+            updateData,
+            {
+                merge: true
             }
         );
 
-
-        /*
-        =========================================
-        REGISTRO
-        =========================================
-        */
-
-        registerForm.addEventListener(
-            "submit",
-            async function(event) {
-
-                event.preventDefault();
+        return;
+    }
 
 
-                const name =
-                    document
-                        .getElementById("registerName")
-                        .value
-                        .trim();
+    /*
+        Usuario nuevo.
+    */
+
+    await setDoc(
+        userRef,
+        {
+            uid: user.uid,
+
+            name:
+                extraData.name ||
+                user.displayName ||
+                "Usuario",
+
+            email:
+                user.email || "",
+
+            photoURL:
+                user.photoURL || "",
+
+            provider:
+                extraData.provider || "password",
+
+            createdAt:
+                serverTimestamp(),
+
+            updatedAt:
+                serverTimestamp()
+        }
+    );
+}
 
 
-                const email =
-                    document
-                        .getElementById("registerEmail")
-                        .value
-                        .trim();
+/* =========================================================
+   REDIRECCIÓN SI YA ESTÁ AUTENTICADO
+   ========================================================= */
+
+let authStateResolved = false;
 
 
-                const password =
-                    document
-                        .getElementById("registerPassword")
-                        .value;
+onAuthStateChanged(auth, async (user) => {
+
+    authStateResolved = true;
+
+    if (!user) return;
+
+    /*
+        Si estamos en index/login y ya existe sesión,
+        enviamos al usuario a app.html.
+    */
+
+    const currentPage =
+        window.location.pathname
+            .split("/")
+            .pop()
+            .toLowerCase();
 
 
-                const confirmPassword =
-                    document
-                        .getElementById("confirmPassword")
-                        .value;
+    const isLoginPage =
+        currentPage === "" ||
+        currentPage === "index.html" ||
+        currentPage === "login.html";
 
 
-                if (password.length < 8) {
-
-                    showToast(
-                        "La contraseña debe tener al menos 8 caracteres."
-                    );
-
-                    return;
-
-                }
+    if (!isLoginPage) return;
 
 
-                if (password !== confirmPassword) {
+    try {
 
-                    showToast(
-                        "Las contraseñas no coinciden."
-                    );
+        await saveUserProfile(user);
 
-                    return;
+    } catch (error) {
 
-                }
+        console.error(
+            "Error sincronizando perfil:",
+            error
+        );
+
+    }
 
 
-                const button =
-                    document.getElementById(
-                        "registerButton"
-                    );
+    window.location.href = "app.html";
 
+});
+
+
+/* =========================================================
+   LOGIN
+   ========================================================= */
+
+if (loginForm) {
+
+    loginForm.addEventListener(
+        "submit",
+        async function(event) {
+
+            event.preventDefault();
+
+
+            const email =
+                document
+                    .getElementById("loginEmail")
+                    ?.value
+                    .trim();
+
+
+            const password =
+                document
+                    .getElementById("loginPassword")
+                    ?.value;
+
+
+            const remember =
+                document
+                    .getElementById("remember")
+                    ?.checked;
+
+
+            if (!email || !password) {
+
+                showToast(
+                    "Completa todos los campos."
+                );
+
+                return;
+
+            }
+
+
+            const button =
+                document.getElementById(
+                    "loginButton"
+                );
+
+
+            if (button) {
 
                 button.classList.add(
                     "button-loading"
@@ -308,101 +453,510 @@ YA HAY SESIÓN ACTIVA — REDIRIGIR A app.html
                 button.innerHTML =
                     '<span class="spinner"></span>';
 
+                button.disabled = true;
 
-                try {
+            }
 
-                    const response = await fetch(
-                        `${API_URL}/auth/register`,
-                        {
-                            method: "POST",
-                            headers: {
-                                "Content-Type": "application/json"
-                            },
-                            credentials: "include",
-                            body: JSON.stringify({
-                                name,
-                                email,
-                                password
-                            })
-                        }
+
+            try {
+
+                /*
+                    Si "Recordarme" está activado:
+
+                    Firebase guarda la sesión localmente.
+
+                    Si está desactivado:
+
+                    la sesión dura mientras exista
+                    la pestaña/ventana según el navegador.
+                */
+
+                await setPersistence(
+                    auth,
+                    remember
+                        ? browserLocalPersistence
+                        : browserSessionPersistence
+                );
+
+
+                const userCredential =
+                    await signInWithEmailAndPassword(
+                        auth,
+                        email,
+                        password
                     );
 
-                    const data = await response.json();
 
-                    if (!response.ok || !data.success) {
+                const user =
+                    userCredential.user;
 
-                        showToast(
-                            data.message ||
-                            "Ocurrió un error al crear la cuenta."
-                        );
 
-                        return;
-
+                await saveUserProfile(
+                    user,
+                    {
+                        provider: "password"
                     }
+                );
 
-                    localStorage.setItem(
-                        "nexusai_token",
-                        data.token
+
+                showToast(
+                    "Inicio de sesión correcto."
+                );
+
+
+                setTimeout(() => {
+
+                    window.location.href =
+                        "app.html";
+
+                }, 500);
+
+
+            } catch (error) {
+
+                console.error(
+                    "Login error:",
+                    error
+                );
+
+
+                showToast(
+                    getFirebaseErrorMessage(
+                        error
+                    )
+                );
+
+
+            } finally {
+
+                if (button) {
+
+                    button.classList.remove(
+                        "button-loading"
                     );
 
-                    showToast(
-                        "Cuenta creada correctamente."
-                    );
+                    button.textContent =
+                        "Iniciar sesión";
 
-                    setTimeout(() => {
-
-                        window.location.href = "app.html";
-
-                    }, 700);
-
-                } catch (error) {
-
-                    console.error("Register error:", error);
-
-                    showToast(
-                        "No se pudo conectar con el servidor."
-                    );
-
-                } finally {
-
-                    button.classList.remove("button-loading");
-
-                    button.textContent = "Crear cuenta";
+                    button.disabled = false;
 
                 }
 
             }
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   REGISTRO
+   ========================================================= */
+
+if (registerForm) {
+
+    registerForm.addEventListener(
+        "submit",
+        async function(event) {
+
+            event.preventDefault();
+
+
+            const name =
+                document
+                    .getElementById("registerName")
+                    ?.value
+                    .trim();
+
+
+            const email =
+                document
+                    .getElementById("registerEmail")
+                    ?.value
+                    .trim();
+
+
+            const password =
+                document
+                    .getElementById("registerPassword")
+                    ?.value;
+
+
+            const confirmPassword =
+                document
+                    .getElementById("confirmPassword")
+                    ?.value;
+
+
+            if (!name) {
+
+                showToast(
+                    "Introduce tu nombre."
+                );
+
+                return;
+
+            }
+
+
+            if (!email) {
+
+                showToast(
+                    "Introduce tu correo electrónico."
+                );
+
+                return;
+
+            }
+
+
+            if (password.length < 8) {
+
+                showToast(
+                    "La contraseña debe tener al menos 8 caracteres."
+                );
+
+                return;
+
+            }
+
+
+            if (password !== confirmPassword) {
+
+                showToast(
+                    "Las contraseñas no coinciden."
+                );
+
+                return;
+
+            }
+
+
+            const button =
+                document.getElementById(
+                    "registerButton"
+                );
+
+
+            if (button) {
+
+                button.classList.add(
+                    "button-loading"
+                );
+
+                button.innerHTML =
+                    '<span class="spinner"></span>';
+
+                button.disabled = true;
+
+            }
+
+
+            try {
+
+                const userCredential =
+                    await createUserWithEmailAndPassword(
+                        auth,
+                        email,
+                        password
+                    );
+
+
+                const user =
+                    userCredential.user;
+
+
+                /*
+                    Guardamos el nombre también
+                    dentro del perfil de Firebase.
+                */
+
+                await updateProfile(
+                    user,
+                    {
+                        displayName: name
+                    }
+                );
+
+
+                /*
+                    Guardamos información adicional
+                    en Firestore.
+                */
+
+                await saveUserProfile(
+                    user,
+                    {
+                        name: name,
+                        provider: "password"
+                    }
+                );
+
+
+                showToast(
+                    "Cuenta creada correctamente."
+                );
+
+
+                setTimeout(() => {
+
+                    window.location.href =
+                        "app.html";
+
+                }, 700);
+
+
+            } catch (error) {
+
+                console.error(
+                    "Register error:",
+                    error
+                );
+
+
+                showToast(
+                    getFirebaseErrorMessage(
+                        error
+                    )
+                );
+
+
+            } finally {
+
+                if (button) {
+
+                    button.classList.remove(
+                        "button-loading"
+                    );
+
+                    button.textContent =
+                        "Crear cuenta";
+
+                    button.disabled = false;
+
+                }
+
+            }
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   RECUPERAR CONTRASEÑA
+   ========================================================= */
+
+async function forgotPassword() {
+
+    const email =
+        document
+            .getElementById("loginEmail")
+            ?.value
+            .trim();
+
+
+    if (!email) {
+
+        showToast(
+            "Escribe tu correo primero."
+        );
+
+        return;
+
+    }
+
+
+    try {
+
+        await sendPasswordResetEmail(
+            auth,
+            email
         );
 
 
-        /*
-        =========================================
-        RECUPERAR CONTRASEÑA
-        =========================================
-        */
+        showToast(
+            "Te enviamos un correo para recuperar tu contraseña."
+        );
 
-        function forgotPassword() {
 
-            showToast(
-                "La recuperación de contraseña estará disponible próximamente."
+    } catch (error) {
+
+        console.error(
+            "Password reset error:",
+            error
+        );
+
+
+        showToast(
+            getFirebaseErrorMessage(
+                error
+            )
+        );
+
+    }
+
+}
+
+
+window.forgotPassword =
+    forgotPassword;
+
+
+/* =========================================================
+   GOOGLE LOGIN
+   ========================================================= */
+
+async function loginWithGoogle() {
+
+    try {
+
+        await setPersistence(
+            auth,
+            browserLocalPersistence
+        );
+
+
+        const result =
+            await signInWithPopup(
+                auth,
+                googleProvider
             );
 
-        }
+
+        const user =
+            result.user;
 
 
-        /*
-        =========================================
-        GOOGLE / GITHUB
-        =========================================
-        */
+        await saveUserProfile(
+            user,
+            {
+                name:
+                    user.displayName ||
+                    "Usuario de Google",
 
-        function socialLogin(provider) {
-            if (provider === "google") {
-                window.location.href = `${API_URL}/auth/google`;
-                return
+                provider:
+                    "google"
             }
-            showToast (
-                 `Inicio de sesión con ${provider} próximamente.`,
-        "error"
-            );
-        }
+        );
+
+
+        showToast(
+            "Inicio de sesión con Google correcto."
+        );
+
+
+        setTimeout(() => {
+
+            window.location.href =
+                "app.html";
+
+        }, 500);
+
+
+    } catch (error) {
+
+        console.error(
+            "Google login error:",
+            error
+        );
+
+
+        showToast(
+            getFirebaseErrorMessage(
+                error
+            )
+        );
+
+    }
+
+}
+
+
+window.loginWithGoogle =
+    loginWithGoogle;
+
+
+/* =========================================================
+   GOOGLE / GITHUB
+   ========================================================= */
+
+function socialLogin(provider) {
+
+    if (provider === "google") {
+
+        loginWithGoogle();
+
+        return;
+
+    }
+
+
+    showToast(
+        `Inicio de sesión con ${provider} próximamente.`
+    );
+
+}
+
+
+window.socialLogin =
+    socialLogin;
+
+
+/* =========================================================
+   CERRAR SESIÓN
+   ========================================================= */
+
+async function logout() {
+
+    try {
+
+        await signOut(auth);
+
+        window.location.href =
+            "index.html";
+
+    } catch (error) {
+
+        console.error(
+            "Logout error:",
+            error
+        );
+
+        showToast(
+            "No se pudo cerrar la sesión."
+        );
+
+    }
+
+}
+
+
+window.logout =
+    logout;
+
+
+/* =========================================================
+   USUARIO ACTUAL
+   ========================================================= */
+
+function getCurrentUser() {
+
+    return auth.currentUser || null;
+
+}
+
+
+window.getCurrentUser =
+    getCurrentUser;
+
+
+/* =========================================================
+   LOG
+   ========================================================= */
+
+console.log(
+    "🔥 NexusAI conectado a Firebase Authentication"
+);
