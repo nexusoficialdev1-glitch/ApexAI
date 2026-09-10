@@ -176,7 +176,7 @@ img {
 
 .brand > span > span,
 .mobile-brand strong span {
-    color: var(--primary);
+    color: var(--text);
 }
 
 .brand-icon {
@@ -193,7 +193,7 @@ img {
 
     border-radius: 10px;
 
-    background: var(--primary);
+    background: var(--primary-soft);
 
     box-shadow:
         0 6px 18px rgba(37, 99, 235, .22);
@@ -1022,7 +1022,7 @@ img {
 
     border-radius: 9px;
 
-    background: var(--primary);
+    background: var(--primary-soft);
     color: #fff;
 
     font-size: 11px;
