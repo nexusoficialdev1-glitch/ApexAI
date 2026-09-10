@@ -1,14 +1,4 @@
-/* =========================================================
-   NexusAI — Privacy Policy
-   Language: English / Spanish
-   Automatic browser language detection
-========================================================= */
-
 const translations = {
-
-    /* =====================================================
-       ENGLISH
-    ===================================================== */
 
     en: {
 
@@ -16,9 +6,6 @@ const translations = {
         legalLabel: "LEGAL",
         lastUpdated: "Last updated:",
         updatedDate: "September 4, 2026",
-
-        /* SIDEBAR */
-
         navIntroduction: "Introduction",
         navInformation: "Information We Collect",
         navUsage: "How We Use Information",
@@ -33,11 +20,6 @@ const translations = {
         navChanges: "Changes to This Policy",
         navContact: "Contact Us",
 
-
-        /* =================================================
-           1. INTRODUCTION
-        ================================================= */
-
         section1Title: "1. Introduction",
 
         section1P1:
@@ -48,11 +30,6 @@ const translations = {
 
         section1P3:
             "By using NexusAI, you acknowledge the practices described in this Privacy Policy.",
-
-
-        /* =================================================
-           2. INFORMATION WE COLLECT
-        ================================================= */
 
         section2Title: "2. Information We Collect",
 
@@ -76,11 +53,6 @@ const translations = {
 
         section2P2:
             "We only collect information that is reasonably necessary to provide, maintain, secure, and improve the service.",
-
-
-        /* =================================================
-           3. HOW WE USE INFORMATION
-        ================================================= */
 
         section3Title: "3. How We Use Information",
 
@@ -108,11 +80,6 @@ const translations = {
         section3L7:
             "Improve our products and user experience.",
 
-
-        /* =================================================
-           4. AI SERVICES
-        ================================================= */
-
         section4Title: "4. AI Services",
 
         section4P1:
@@ -130,11 +97,6 @@ const translations = {
         section4P3:
             "AI-generated responses may be processed by third-party AI infrastructure depending on the features and providers used by NexusAI.",
 
-
-        /* =================================================
-           5. INFORMATION SHARING
-        ================================================= */
-
         section5Title: "5. Information Sharing",
 
         section5P1:
@@ -145,11 +107,6 @@ const translations = {
 
         section5P3:
             "Information may also be disclosed when required by law, legal process, or to protect the rights, safety, and security of NexusAI, its users, or others.",
-
-
-        /* =================================================
-           6. THIRD-PARTY SERVICES
-        ================================================= */
 
         section6Title: "6. Third-Party Services",
 
@@ -165,11 +122,6 @@ const translations = {
         section6P4:
             "We recommend reviewing the privacy policies of third-party services that you choose to connect to your NexusAI account.",
 
-
-        /* =================================================
-           7. DATA SECURITY
-        ================================================= */
-
         section7Title: "7. Data Security",
 
         section7P1:
@@ -181,11 +133,6 @@ const translations = {
         section7P3:
             "You are also responsible for protecting your account credentials and keeping your password confidential.",
 
-
-        /* =================================================
-           8. DATA RETENTION
-        ================================================= */
-
         section8Title: "8. Data Retention",
 
         section8P1:
@@ -193,11 +140,6 @@ const translations = {
 
         section8P2:
             "Retention periods may vary depending on the type of information and how it is used.",
-
-
-        /* =================================================
-           9. YOUR RIGHTS
-        ================================================= */
 
         section9Title: "9. Your Rights",
 
@@ -222,11 +164,6 @@ const translations = {
         section9P2:
             "Some rights may be subject to legal exceptions or limitations.",
 
-
-        /* =================================================
-           10. CHILDREN'S PRIVACY
-        ================================================= */
-
         section10Title: "10. Children's Privacy",
 
         section10P1:
@@ -235,11 +172,6 @@ const translations = {
         section10P2:
             "If you believe that a child has provided personal information to NexusAI in a way that violates applicable requirements, please contact us so that we can review the situation.",
 
-
-        /* =================================================
-           11. COOKIES
-        ================================================= */
-
         section11Title: "11. Cookies and Similar Technologies",
 
         section11P1:
@@ -247,11 +179,6 @@ const translations = {
 
         section11P2:
             "Your browser may provide controls for managing or restricting cookies and similar technologies.",
-
-
-        /* =================================================
-           12. CHANGES
-        ================================================= */
 
         section12Title:
             "12. Changes to This Privacy Policy",
@@ -265,11 +192,6 @@ const translations = {
         section12P3:
             "We encourage you to review this Privacy Policy periodically.",
 
-
-        /* =================================================
-           13. CONTACT
-        ================================================= */
-
         section13Title: "13. Contact Us",
 
         section13P1:
@@ -281,11 +203,6 @@ const translations = {
         contactText:
             "Please use the official contact method provided by NexusAI.",
 
-
-        /* =================================================
-           FOOTER
-        ================================================= */
-
         footerDescription:
             "AI tools built for everyone.",
 
@@ -296,19 +213,12 @@ const translations = {
             "Privacy Policy"
     },
 
-
-    /* =====================================================
-       SPANISH
-    ===================================================== */
-
     es: {
 
         privacyTitle: "Política de Privacidad",
         legalLabel: "LEGAL",
         lastUpdated: "Última actualización:",
         updatedDate: "4 de septiembre de 2026",
-
-        /* SIDEBAR */
 
         navIntroduction: "Introducción",
         navInformation: "Información que Recopilamos",
@@ -324,11 +234,6 @@ const translations = {
         navChanges: "Cambios en esta Política",
         navContact: "Contáctanos",
 
-
-        /* =================================================
-           1. INTRODUCCIÓN
-        ================================================= */
-
         section1Title: "1. Introducción",
 
         section1P1:
@@ -339,11 +244,6 @@ const translations = {
 
         section1P3:
             "Al utilizar NexusAI, reconoces las prácticas descritas en esta Política de Privacidad.",
-
-
-        /* =================================================
-           2. INFORMACIÓN QUE RECOPILAMOS
-        ================================================= */
 
         section2Title:
             "2. Información que Recopilamos",
@@ -368,11 +268,6 @@ const translations = {
 
         section2P2:
             "Solo recopilamos información que sea razonablemente necesaria para proporcionar, mantener, proteger y mejorar el servicio.",
-
-
-        /* =================================================
-           3. CÓMO UTILIZAMOS LA INFORMACIÓN
-        ================================================= */
 
         section3Title:
             "3. Cómo Utilizamos la Información",
@@ -401,11 +296,6 @@ const translations = {
         section3L7:
             "Mejorar nuestros productos y la experiencia del usuario.",
 
-
-        /* =================================================
-           4. SERVICIOS DE IA
-        ================================================= */
-
         section4Title:
             "4. Servicios de IA",
 
@@ -424,11 +314,6 @@ const translations = {
         section4P3:
             "Las respuestas generadas por IA pueden ser procesadas mediante infraestructura de IA de terceros dependiendo de las funciones y proveedores utilizados por NexusAI.",
 
-
-        /* =================================================
-           5. COMPARTICIÓN DE INFORMACIÓN
-        ================================================= */
-
         section5Title:
             "5. Compartición de Información",
 
@@ -440,11 +325,6 @@ const translations = {
 
         section5P3:
             "También podemos divulgar información cuando sea requerido por la ley, procesos legales o para proteger los derechos, la seguridad y la integridad de NexusAI, sus usuarios u otras personas.",
-
-
-        /* =================================================
-           6. SERVICIOS DE TERCEROS
-        ================================================= */
 
         section6Title:
             "6. Servicios de Terceros",
@@ -461,11 +341,6 @@ const translations = {
         section6P4:
             "Recomendamos revisar las políticas de privacidad de los servicios de terceros que decidas conectar con tu cuenta de NexusAI.",
 
-
-        /* =================================================
-           7. SEGURIDAD
-        ================================================= */
-
         section7Title:
             "7. Seguridad de los Datos",
 
@@ -478,11 +353,6 @@ const translations = {
         section7P3:
             "También eres responsable de proteger las credenciales de tu cuenta y mantener tu contraseña confidencial.",
 
-
-        /* =================================================
-           8. CONSERVACIÓN
-        ================================================= */
-
         section8Title:
             "8. Conservación de Datos",
 
@@ -491,11 +361,6 @@ const translations = {
 
         section8P2:
             "Los períodos de conservación pueden variar dependiendo del tipo de información y de cómo se utilice.",
-
-
-        /* =================================================
-           9. DERECHOS
-        ================================================= */
 
         section9Title:
             "9. Tus Derechos",
@@ -521,11 +386,6 @@ const translations = {
         section9P2:
             "Algunos derechos pueden estar sujetos a excepciones o limitaciones legales.",
 
-
-        /* =================================================
-           10. PRIVACIDAD DE MENORES
-        ================================================= */
-
         section10Title:
             "10. Privacidad de Menores",
 
@@ -535,11 +395,6 @@ const translations = {
         section10P2:
             "Si crees que un menor ha proporcionado información personal a NexusAI de una manera que incumple los requisitos aplicables, contáctanos para que podamos revisar la situación.",
 
-
-        /* =================================================
-           11. COOKIES
-        ================================================= */
-
         section11Title:
             "11. Cookies y Tecnologías Similares",
 
@@ -548,11 +403,6 @@ const translations = {
 
         section11P2:
             "Tu navegador puede ofrecer controles para administrar o restringir las cookies y tecnologías similares.",
-
-
-        /* =================================================
-           12. CAMBIOS
-        ================================================= */
 
         section12Title:
             "12. Cambios en esta Política de Privacidad",
@@ -566,11 +416,6 @@ const translations = {
         section12P3:
             "Te recomendamos revisar periódicamente esta Política de Privacidad.",
 
-
-        /* =================================================
-           13. CONTACTO
-        ================================================= */
-
         section13Title:
             "13. Contáctanos",
 
@@ -582,11 +427,6 @@ const translations = {
 
         contactText:
             "Utiliza el método de contacto oficial proporcionado por NexusAI.",
-
-
-        /* =================================================
-           FOOTER
-        ================================================= */
 
         footerDescription:
             "Herramientas de IA creadas para todos.",
@@ -600,11 +440,6 @@ const translations = {
 
 };
 
-
-/* =========================================================
-   DETECT BROWSER LANGUAGE
-========================================================= */
-
 function detectLanguage() {
 
     const browserLanguage =
@@ -615,32 +450,12 @@ function detectLanguage() {
     const language =
         browserLanguage.toLowerCase();
 
-    /*
-        Any Spanish variant:
-        es
-        es-ES
-        es-MX
-        es-US
-        es-VE
-        es-AR
-        etc.
-    */
-
     if (language.startsWith("es")) {
         return "es";
     }
 
-    /*
-        Any other language uses English.
-    */
-
     return "en";
 }
-
-
-/* =========================================================
-   APPLY LANGUAGE
-========================================================= */
 
 function applyLanguage() {
 
@@ -653,14 +468,8 @@ function applyLanguage() {
         return;
     }
 
-
-    /* Update HTML language */
-
     document.documentElement.lang =
         language;
-
-
-    /* Translate every element */
 
     document
         .querySelectorAll("[data-i18n]")
@@ -687,19 +496,11 @@ function applyLanguage() {
 
         });
 
-
-    /* Update browser title */
-
     document.title =
         language === "es"
             ? "Política de Privacidad — NexusAI"
             : "Privacy Policy — NexusAI";
-}
-
-
-/* =========================================================
-   SMOOTH SCROLL
-========================================================= */
+    }
 
 function initializeSmoothScroll() {
 
@@ -733,11 +534,6 @@ function initializeSmoothScroll() {
                     block: "start"
                 });
 
-
-                /*
-                    Update URL without reloading.
-                */
-
                 history.replaceState(
                     null,
                     "",
@@ -750,11 +546,6 @@ function initializeSmoothScroll() {
     });
 
 }
-
-
-/* =========================================================
-   ACTIVE SIDEBAR SECTION
-========================================================= */
 
 function initializeSectionObserver() {
 
@@ -830,11 +621,6 @@ function initializeSectionObserver() {
     });
 
 }
-
-
-/* =========================================================
-   INITIALIZE
-========================================================= */
 
 document.addEventListener(
     "DOMContentLoaded",

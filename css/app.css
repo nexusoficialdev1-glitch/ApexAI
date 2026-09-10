@@ -1,7 +1,3 @@
-/* =========================================================
-   NEXUSAI — APP
-   ========================================================= */
-
 :root {
     --bg: #ffffff;
     --surface: #ffffff;
@@ -62,11 +58,6 @@
     --shadow-lg: 0 25px 70px rgba(0, 0, 0, .45);
 }
 
-
-/* =========================================================
-   RESET
-   ========================================================= */
-
 * {
     box-sizing: border-box;
     margin: 0;
@@ -108,11 +99,6 @@ img {
     max-width: 100%;
 }
 
-
-/* =========================================================
-   APP
-   ========================================================= */
-
 .app-shell {
     display: flex;
 
@@ -122,11 +108,6 @@ img {
 
     background: var(--bg);
 }
-
-
-/* =========================================================
-   SIDEBAR
-   ========================================================= */
 
 .sidebar {
     position: relative;
@@ -151,11 +132,6 @@ img {
 .sidebar-top {
     padding: 15px 14px 10px;
 }
-
-
-/* =========================================================
-   BRAND
-   ========================================================= */
 
 .brand {
     display: flex;
@@ -215,11 +191,6 @@ img {
     border-radius: 9px;
 }
 
-
-/* =========================================================
-   NEW CHAT
-   ========================================================= */
-
 .new-chat-btn {
     display: flex;
     align-items: center;
@@ -258,11 +229,6 @@ img {
 .new-chat-btn:active {
     transform: scale(.98);
 }
-
-
-/* =========================================================
-   SEARCH CHATS
-   ========================================================= */
 
 .search-chats {
     position: relative;
@@ -315,11 +281,6 @@ img {
     font-family: inherit;
     font-size: 9px;
 }
-
-
-/* =========================================================
-   SEARCH BOX
-   ========================================================= */
 
 .search-box {
     display: none;
@@ -388,11 +349,6 @@ img {
     color: var(--text);
 }
 
-
-/* =========================================================
-   HISTORY
-   ========================================================= */
-
 .history-section {
     display: flex;
     flex-direction: column;
@@ -460,11 +416,6 @@ img {
     background: var(--border);
     border-radius: 20px;
 }
-
-
-/* =========================================================
-   CHAT ITEMS
-   ========================================================= */
 
 .chat-item {
     position: relative;
@@ -561,11 +512,6 @@ img {
     color: var(--text);
 }
 
-
-/* =========================================================
-   EMPTY HISTORY
-   ========================================================= */
-
 .empty-history {
     display: flex;
     flex-direction: column;
@@ -590,11 +536,6 @@ img {
 .empty-history p {
     font-size: 11px;
 }
-
-
-/* =========================================================
-   SIDEBAR BOTTOM
-   ========================================================= */
 
 .sidebar-bottom {
     padding: 10px 12px 13px;
@@ -634,11 +575,6 @@ img {
     color: var(--muted);
     text-align: center;
 }
-
-
-/* =========================================================
-   USER AREA
-   ========================================================= */
 
 .user-area {
     display: flex;
@@ -721,11 +657,6 @@ img {
     color: var(--text);
 }
 
-
-/* =========================================================
-   MAIN CONTENT
-   ========================================================= */
-
 .main-content {
     position: relative;
 
@@ -739,11 +670,6 @@ img {
 
     background: var(--bg);
 }
-
-
-/* =========================================================
-   MOBILE HEADER
-   ========================================================= */
 
 .mobile-header {
     display: none;
@@ -793,11 +719,6 @@ img {
     background: var(--surface-3);
 }
 
-
-/* =========================================================
-   CONVERSATION
-   ========================================================= */
-
 .conversation {
     position: relative;
 
@@ -817,11 +738,6 @@ img {
     background: var(--border);
     border-radius: 20px;
 }
-
-
-/* =========================================================
-   WELCOME
-   ========================================================= */
 
 .welcome {
     display: flex;
@@ -888,11 +804,6 @@ img {
     font-size: 13px;
     line-height: 1.7;
 }
-
-
-/* =========================================================
-   PROMPTS
-   ========================================================= */
 
 .prompt-grid {
     display: grid;
@@ -988,11 +899,6 @@ img {
     text-overflow: ellipsis;
 }
 
-
-/* =========================================================
-   MESSAGES
-   ========================================================= */
-
 .messages {
     width: min(850px, calc(100% - 40px));
 
@@ -1062,11 +968,6 @@ img {
     color: var(--text);
 }
 
-
-/* =========================================================
-   CODE / MARKDOWN SUPPORT
-   ========================================================= */
-
 .message-text pre {
     max-width: 100%;
 
@@ -1110,11 +1011,6 @@ img {
 
     background: transparent;
 }
-
-
-/* =========================================================
-   MESSAGE ACTIONS — COPIAR / LIKE / DISLIKE
-   ========================================================= */
 
 .message-actions {
     display: flex;
@@ -1180,11 +1076,6 @@ img {
     background: rgba(239, 68, 68, .18);
 }
 
-
-/* =========================================================
-   TYPING
-   ========================================================= */
-
 .typing {
     display: flex;
     align-items: center;
@@ -1212,11 +1103,6 @@ img {
     animation-delay: .3s;
 }
 
-
-/* =========================================================
-   COMPOSER WRAP
-   ========================================================= */
-
 .composer-wrap {
     position: absolute;
     z-index: 20;
@@ -1238,11 +1124,6 @@ img {
             transparent
         );
 }
-
-
-/* =========================================================
-   ATTACHMENT PREVIEW
-   ========================================================= */
 
 .attachment-preview {
     display: flex;
@@ -1277,11 +1158,6 @@ img {
     box-shadow: var(--shadow);
 }
 
-
-/* =========================================================
-   COMPOSER
-   ========================================================= */
-
 .composer {
     display: flex;
     flex-direction: column;
@@ -1309,11 +1185,6 @@ img {
         0 0 0 3px var(--primary-soft),
         var(--shadow);
 }
-
-
-/* =========================================================
-   TEXTAREA
-   ========================================================= */
 
 .composer textarea {
     width: 100%;
@@ -1348,11 +1219,6 @@ img {
     background: var(--border);
     border-radius: 20px;
 }
-
-
-/* =========================================================
-   COMPOSER BOTTOM
-   ========================================================= */
 
 .composer-bottom {
     display: flex;
@@ -1394,11 +1260,6 @@ img {
     color: var(--text);
 }
 
-
-/* =========================================================
-   SEND BUTTON
-   ========================================================= */
-
 .send-btn {
     display: flex;
     align-items: center;
@@ -1435,11 +1296,6 @@ img {
     cursor: not-allowed;
 }
 
-
-/* =========================================================
-   DISCLAIMER
-   ========================================================= */
-
 .composer-hint {
     display: block;
 
@@ -1456,11 +1312,6 @@ img {
 
     pointer-events: none;
 }
-
-
-/* =========================================================
-   CONTEXT MENU
-   ========================================================= */
 
 .context-menu {
     position: fixed;
@@ -1517,11 +1368,6 @@ img {
     background: var(--danger-soft);
     color: var(--danger);
 }
-
-
-/* =========================================================
-   MODAL
-   ========================================================= */
 
 .modal-backdrop {
     position: fixed;
@@ -1643,11 +1489,6 @@ img {
     transform: scale(.97);
 }
 
-
-/* =========================================================
-   TOAST
-   ========================================================= */
-
 .toast {
     position: fixed;
     z-index: 500;
@@ -1683,11 +1524,6 @@ img {
     transform: translate(-50%, 0);
 }
 
-
-/* =========================================================
-   SIDEBAR OVERLAY
-   ========================================================= */
-
 .sidebar-overlay {
     position: fixed;
     z-index: 40;
@@ -1704,11 +1540,6 @@ img {
 .sidebar-overlay.active {
     display: block;
 }
-
-
-/* =========================================================
-   ANIMATIONS
-   ========================================================= */
 
 @keyframes fadeIn {
     from {
@@ -1794,11 +1625,6 @@ img {
     }
 }
 
-
-/* =========================================================
-   RESPONSIVE — TABLET
-   ========================================================= */
-
 @media (max-width: 850px) {
 
     :root {
@@ -1813,11 +1639,6 @@ img {
         width: 100%;
     }
 }
-
-
-/* =========================================================
-   RESPONSIVE — MOBILE
-   ========================================================= */
 
 @media (max-width: 700px) {
 
@@ -1883,11 +1704,6 @@ img {
     }
 }
 
-
-/* =========================================================
-   RESPONSIVE — SMALL PHONES
-   ========================================================= */
-
 @media (max-width: 430px) {
 
     .mobile-header {
@@ -1947,10 +1763,6 @@ img {
     }
 }
 
-/* =========================================
-   BOTÓN SIDEBAR EN PC
-========================================= */
-
 .desktop-sidebar-toggle {
     position: fixed;
     top: 18px;
@@ -1982,24 +1794,15 @@ img {
     transform: scale(1.05);
 }
 
-
-/* Sidebar cerrada */
-
 body.sidebar-collapsed .desktop-sidebar-toggle {
     left: 18px;
 }
-
-
-/* PC */
 
 @media (max-width: 768px) {
     .desktop-sidebar-toggle {
         display: none;
     }
 }
-
-
-/* Sidebar */
 
 @media (min-width: 769px) {
 
@@ -2266,10 +2069,6 @@ body.sidebar-collapsed .desktop-sidebar-toggle {
             .settings-tab span { display: none; }
         }
 
-        /* =========================================================
-   NEXUSAI — RESPUESTAS BONITAS / MARKDOWN
-   ========================================================= */
-
 .message-text {
     max-width: 780px;
 
@@ -2281,8 +2080,6 @@ body.sidebar-collapsed .desktop-sidebar-toggle {
     overflow-wrap: anywhere;
 }
 
-/* Párrafos */
-
 .message-text p {
     margin: 0 0 14px;
 }
@@ -2290,11 +2087,6 @@ body.sidebar-collapsed .desktop-sidebar-toggle {
 .message-text p:last-child {
     margin-bottom: 0;
 }
-
-
-/* =========================================================
-   TÍTULOS
-   ========================================================= */
 
 .message-text h1,
 .message-text h2,
@@ -2331,11 +2123,6 @@ body.sidebar-collapsed .desktop-sidebar-toggle {
     font-size: 14px;
 }
 
-
-/* =========================================================
-   NEGRITA / CURSIVA
-   ========================================================= */
-
 .message-text strong {
     color: var(--text);
     font-weight: 700;
@@ -2344,11 +2131,6 @@ body.sidebar-collapsed .desktop-sidebar-toggle {
 .message-text em {
     color: var(--text-2);
 }
-
-
-/* =========================================================
-   LISTAS
-   ========================================================= */
 
 .message-text ul,
 .message-text ol {
@@ -2370,11 +2152,6 @@ body.sidebar-collapsed .desktop-sidebar-toggle {
     font-weight: 700;
 }
 
-
-/* =========================================================
-   LINKS
-   ========================================================= */
-
 .message-text a {
     color: var(--primary);
 
@@ -2393,11 +2170,6 @@ body.sidebar-collapsed .desktop-sidebar-toggle {
     border-bottom-color: currentColor;
 }
 
-
-/* =========================================================
-   CITAS
-   ========================================================= */
-
 .message-text blockquote {
     margin: 15px 0;
     padding: 11px 15px;
@@ -2413,11 +2185,6 @@ body.sidebar-collapsed .desktop-sidebar-toggle {
     margin: 0;
 }
 
-
-/* =========================================================
-   SEPARADOR
-   ========================================================= */
-
 .message-text hr {
     height: 1px;
 
@@ -2427,11 +2194,6 @@ body.sidebar-collapsed .desktop-sidebar-toggle {
 
     background: var(--border);
 }
-
-
-/* =========================================================
-   TABLAS
-   ========================================================= */
 
 .message-text .table-wrapper {
     width: 100%;
@@ -2495,11 +2257,6 @@ body.sidebar-collapsed .desktop-sidebar-toggle {
     background: var(--surface-2);
 }
 
-
-/* =========================================================
-   CÓDIGO INLINE
-   ========================================================= */
-
 .message-text :not(pre) > code {
     display: inline-block;
 
@@ -2519,11 +2276,6 @@ body.sidebar-collapsed .desktop-sidebar-toggle {
 
     font-size: .88em;
 }
-
-
-/* =========================================================
-   BLOQUES DE CÓDIGO
-   ========================================================= */
 
 .message-text pre {
     position: relative;
@@ -2568,11 +2320,6 @@ body.sidebar-collapsed .desktop-sidebar-toggle {
     white-space: pre;
 }
 
-
-/* =========================================================
-   IMÁGENES DENTRO DE RESPUESTAS
-   ========================================================= */
-
 .message-text img {
     display: block;
 
@@ -2585,20 +2332,10 @@ body.sidebar-collapsed .desktop-sidebar-toggle {
     border-radius: 12px;
 }
 
-
-/* =========================================================
-   TEXTO DE TABLAS / CONTENIDO LARGO
-   ========================================================= */
-
 .message-text td,
 .message-text th {
     overflow-wrap: anywhere;
 }
-
-
-/* =========================================================
-   RESPUESTA DEL BOT
-   ========================================================= */
 
 .message.assistant .message-content {
     padding-top: 1px;
@@ -2607,11 +2344,6 @@ body.sidebar-collapsed .desktop-sidebar-toggle {
 .message.assistant .message-text {
     animation: responseAppear .3s ease;
 }
-
-
-/* =========================================================
-   USUARIO
-   ========================================================= */
 
 .message.user .message-text {
     max-width: 680px;
@@ -2624,11 +2356,6 @@ body.sidebar-collapsed .desktop-sidebar-toggle {
 
     line-height: 1.6;
 }
-
-
-/* =========================================================
-   DARK MODE
-   ========================================================= */
 
 [data-theme="dark"] .message-text .table-wrapper {
     box-shadow: 0 3px 15px rgba(0, 0, 0, .18);
@@ -2655,11 +2382,6 @@ body.sidebar-collapsed .desktop-sidebar-toggle {
     background: rgba(74, 222, 128, .2);
 }
 
-
-/* =========================================================
-   SCROLL DE TABLAS
-   ========================================================= */
-
 .message-text .table-wrapper::-webkit-scrollbar {
     height: 5px;
 }
@@ -2668,11 +2390,6 @@ body.sidebar-collapsed .desktop-sidebar-toggle {
     background: var(--border);
     border-radius: 20px;
 }
-
-
-/* =========================================================
-   ANIMACIÓN
-   ========================================================= */
 
 @keyframes responseAppear {
     from {
@@ -2685,11 +2402,6 @@ body.sidebar-collapsed .desktop-sidebar-toggle {
         transform: translateY(0);
     }
 }
-
-
-/* =========================================================
-   MOBILE
-   ========================================================= */
 
 @media (max-width: 700px) {
 
@@ -2804,10 +2516,6 @@ body.sidebar-collapsed .desktop-sidebar-toggle {
 .image-viewer-close:hover {
     background: #f1f5f9;
 }
-
-/* ================================
-   MARKDOWN
-   ================================ */
 
 .message-content h1,
 .message-content h2,
@@ -2959,10 +2667,6 @@ body.sidebar-collapsed .desktop-sidebar-toggle {
     opacity: 0.7;
 }
 
-/* ================================
-   GALERÍA DE IMÁGENES DE LA IA
-================================ */
-
 .assistant-image-gallery {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -2989,7 +2693,6 @@ body.sidebar-collapsed .desktop-sidebar-toggle {
     opacity: 0.95;
 }
 
-/* Móvil */
 @media (max-width: 600px) {
     .assistant-image-gallery {
         grid-template-columns: 1fr;

@@ -1,8 +1,3 @@
-/* =========================================================
-   NEXUSAI — TERMS OF SERVICE
-   Automatic language detection
-   ========================================================= */
-
 const translations = {
     en: {
         termsTitle: "Terms of Service",
@@ -207,11 +202,6 @@ const translations = {
     }
 };
 
-
-/* =========================================================
-   DETECT BROWSER LANGUAGE
-   ========================================================= */
-
 function detectLanguage() {
 
     const browserLanguage =
@@ -222,27 +212,12 @@ function detectLanguage() {
     const language =
         browserLanguage.toLowerCase();
 
-    /*
-     * Spanish:
-     * es
-     * es-ES
-     * es-VE
-     * es-MX
-     * es-US
-     * etc.
-     */
-
     if (language.startsWith("es")) {
         return "es";
     }
 
     return "en";
 }
-
-
-/* =========================================================
-   APPLY LANGUAGE
-   ========================================================= */
 
 function applyLanguage() {
 
@@ -267,11 +242,6 @@ function applyLanguage() {
             ? "Términos de Servicio — NexusAI"
             : "Terms of Service — NexusAI";
 }
-
-
-/* =========================================================
-   SMOOTH SCROLL
-   ========================================================= */
 
 function initializeSmoothScroll() {
 
@@ -308,11 +278,6 @@ function initializeSmoothScroll() {
         });
     });
 }
-
-
-/* =========================================================
-   ACTIVE SIDEBAR SECTION
-   ========================================================= */
 
 function initializeSectionObserver() {
 
@@ -361,11 +326,6 @@ function initializeSectionObserver() {
         observer.observe(section);
     });
 }
-
-
-/* =========================================================
-   INITIALIZE
-   ========================================================= */
 
 document.addEventListener("DOMContentLoaded", () => {
 

@@ -30,11 +30,6 @@ const GOOGLE_CALLBACK_URL =
     process.env.GITHUB_CALLBACK_URL ||
     `http://localhost:${PORT}/api/auth/github/callback`;
 
-
-/* =========================================================
-   DATABASE
-========================================================= */
-
 const db = new Database("nexusai.db");
 
 db.pragma("journal_mode = WAL");
@@ -48,11 +43,6 @@ db.exec(`
         created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
     )
 `);
-
-
-/* =========================================================
-   MIDDLEWARE
-========================================================= */
 
 app.use(express.json());
 
@@ -76,11 +66,6 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 app.use(passport.initialize());
-
-
-/* =========================================================
-   HELPERS
-========================================================= */
 
 function normalizeEmail(email) {
     return String(email || "")
@@ -122,11 +107,6 @@ function getSafeUser(user) {
     };
 }
 
-
-/* =========================================================
-   GOOGLE OAUTH
-========================================================= */
-
 if (
     process.env.GOOGLE_CLIENT_ID &&
     process.env.GOOGLE_CLIENT_SECRET
@@ -159,11 +139,6 @@ if (
                         profile.name?.givenName ||
                         "Usuario de Google";
 
-
-                    /* -----------------------------------------
-                       Buscar usuario existente
-                    ----------------------------------------- */
-
                     let user = db
                         .prepare(`
                             SELECT
@@ -176,11 +151,6 @@ if (
                             WHERE email = ?
                         `)
                         .get(email);
-
-
-                    /* -----------------------------------------
-                       Crear usuario si no existe
-                    ----------------------------------------- */
 
                     if (!user) {
                         const randomPassword = crypto
@@ -220,11 +190,6 @@ if (
                             `)
                             .get(result.lastInsertRowid);
                     }
-
-
-                    /* -----------------------------------------
-                       Actualizar nombre si viene vacío
-                    ----------------------------------------- */
 
                     if (
                         user.name === "Usuario de Google" &&
@@ -277,12 +242,6 @@ if (
                     let email =
                         profile.emails?.find(e => e.value)?.value || null;
 
-                    /*
-                    =========================================
-                    OBTENER EMAIL DESDE GITHUB
-                    =========================================
-                    */
-
                     if (!email) {
 
                         const response = await fetch(
@@ -327,22 +286,11 @@ if (
 
                     email = normalizeEmail(email);
 
-                    /*
-                    =========================================
-                    NOMBRE
-                    =========================================
-                    */
-
                     const name =
                         profile.displayName ||
                         profile.username ||
                         "Usuario de GitHub";
 
-                    /*
-                    =========================================
-                    BUSCAR USUARIO
-                    =========================================
-                    */
 
                     let user = db
                         .prepare(`
@@ -356,12 +304,6 @@ if (
                             WHERE email = ?
                         `)
                         .get(email);
-
-                    /*
-                    =========================================
-                    CREAR USUARIO SI NO EXISTE
-                    =========================================
-                    */
 
                     if (!user) {
 
@@ -407,12 +349,6 @@ if (
                             );
                     }
 
-                    /*
-                    =========================================
-                    ACTUALIZAR NOMBRE
-                    =========================================
-                    */
-
                     if (
                         user.name === "Usuario de GitHub" &&
                         name
@@ -457,22 +393,12 @@ if (
     );
 }
 
-
-/* =========================================================
-   HEALTH CHECK
-========================================================= */
-
 app.get("/api/health", (req, res) => {
     res.json({
         success: true,
         message: "NexusAI API funcionando correctamente 🚀"
     });
 });
-
-
-/* =========================================================
-   REGISTER
-========================================================= */
 
 app.post("/api/auth/register", async (req, res) => {
     try {
@@ -594,11 +520,6 @@ app.post("/api/auth/register", async (req, res) => {
     }
 });
 
-
-/* =========================================================
-   LOGIN
-========================================================= */
-
 app.post("/api/auth/login", async (req, res) => {
     try {
         const email = normalizeEmail(req.body.email);
@@ -686,11 +607,6 @@ app.post("/api/auth/login", async (req, res) => {
     }
 });
 
-
-/* =========================================================
-   GOOGLE LOGIN
-========================================================= */
-
 app.get(
     "/api/auth/google",
     (req, res, next) => {
@@ -716,11 +632,6 @@ app.get(
     })
 );
 
-
-/* =========================================================
-   GOOGLE CALLBACK
-========================================================= */
-
 app.get(
     "/api/auth/google/callback",
 
@@ -742,15 +653,6 @@ app.get(
                 token,
                 false
             );
-
-
-            /*
-             * Guardamos también los datos públicos
-             * en la respuesta de redirección.
-             *
-             * La aplicación puede consultar /auth/me
-             * después de cargar.
-             */
 
             const userData = encodeURIComponent(
     JSON.stringify({
@@ -777,10 +679,6 @@ res.redirect(
     }
 );
 
-/* =========================================================
-   GITHUB LOGIN
-========================================================= */
-
 app.get(
     "/api/auth/github",
     (req, res, next) => {
@@ -802,11 +700,6 @@ app.get(
         session: false
     })
 );
-
-
-/* =========================================================
-   GITHUB CALLBACK
-========================================================= */
 
 app.get(
     "/api/auth/github/callback",
@@ -854,11 +747,6 @@ app.get(
     }
 );
 
-
-/* =========================================================
-   CURRENT USER
-========================================================= */
-
 app.get("/api/auth/me", (req, res) => {
     try {
         const authHeader = req.headers.authorization || "";
@@ -869,7 +757,6 @@ app.get("/api/auth/me", (req, res) => {
 
         const token = req.cookies.nexusai_token || bearerToken;
 
-        // No llegó ni cookie ni Authorization
         if (!token) {
             console.log("❌ /auth/me: no llegó token (ni cookie ni Bearer)");
 
@@ -928,11 +815,6 @@ app.get("/api/auth/me", (req, res) => {
     }
 });
 
-
-/* =========================================================
-   LOGOUT
-========================================================= */
-
 app.post("/api/auth/logout", (req, res) => {
     res.clearCookie("nexusai_token", {
         httpOnly: true,
@@ -946,22 +828,12 @@ app.post("/api/auth/logout", (req, res) => {
     });
 });
 
-
-/* =========================================================
-   404
-========================================================= */
-
 app.use((req, res) => {
     res.status(404).json({
         success: false,
         message: "Ruta no encontrada."
     });
 });
-
-
-/* =========================================================
-   ERROR HANDLER
-========================================================= */
 
 app.use((error, req, res, next) => {
     console.error(
@@ -975,11 +847,6 @@ app.use((error, req, res, next) => {
             "Error interno del servidor."
     });
 });
-
-
-/* =========================================================
-   START SERVER
-========================================================= */
 
 app.listen(PORT, () => {
     console.log("");

@@ -4,40 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#0f172a">
-
-    <title>ApexAi — Chat</title>
+    <title>ApexAi</title>
+    <meta name="description" content="Accede a ApexAI, tu plataforma de inteligencia artificial y chatbot avanzado desarrollado para ofrecer respuestas rápidas, precisas y asistencia inteligente.">
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="Josuexs">
+    <link rel="canonical" href="https://apexxxaiiii.vercel.app/app.html">
+    <meta property="og:title" content="ApexAi">
+    <meta property="og:description" content="Plataforma de inteligencia artificial avanzada y chatbot interactivo.">
+    <meta property="og:url" content="https://apexxxaiiii.vercel.app/">
+    <meta property="og:type" content="website">
     <link rel="icon" href="/img/favicon.ico" type="image/x-icon">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
-        rel="stylesheet"
-    >
-
-    <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
-    >
-
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link rel="stylesheet" href="/css/app.css">
-
-    
 </head>
-
 <body>
 
 <div class="app-shell">
-
-    <!-- =====================================================
-         SIDEBAR
-    ====================================================== -->
-
     <aside class="sidebar" id="sidebar">
 
         <div class="sidebar-top">
-
-            <!-- BRAND -->
             <div class="brand">
                 <div class="brand-icon">
                     <img src="/img/icon.png" alt="ApexAi">
@@ -47,16 +35,10 @@
                     Apex<span>AI</span>
                 </span>
             </div>
-
-
-            <!-- NUEVO CHAT -->
             <button class="new-chat-btn" id="newChatBtn">
                 <i class="fa-solid fa-plus"></i>
                 <span>Nuevo chat</span>
             </button>
-
-
-            <!-- BUSCAR CHATS -->
             <button class="search-chats" id="searchToggle">
                 <i class="fa-solid fa-magnifying-glass"></i>
 
@@ -64,9 +46,6 @@
 
                 <kbd>Ctrl K</kbd>
             </button>
-
-
-            <!-- BUSCADOR -->
             <div class="search-box" id="searchBox">
 
                 <i class="fa-solid fa-magnifying-glass"></i>
@@ -88,12 +67,6 @@
             </div>
 
         </div>
-
-
-        <!-- =================================================
-             HISTORIAL
-        ================================================== -->
-
         <div class="history-section">
 
             <div class="history-heading">
@@ -127,15 +100,7 @@
             </div>
 
         </div>
-
-
-        <!-- =================================================
-             SIDEBAR BOTTOM
-        ================================================== -->
-
         <div class="sidebar-bottom">
-
-            <!-- APARIENCIA -->
             <button
                 class="sidebar-action"
                 id="themeBtn"
@@ -144,9 +109,6 @@
 
                 <span>Cambiar apariencia</span>
             </button>
-
-
-            <!-- USUARIO -->
             <div class="user-area">
 
                 <div
@@ -201,20 +163,7 @@
         </div>
 
     </aside>
-
-
-
-    <!-- =====================================================
-         MAIN
-    ====================================================== -->
-
     <main class="main-content">
-
-
-        <!-- =================================================
-             MOBILE HEADER
-        ================================================== -->
-
         <header class="mobile-header">
 
             <button
@@ -251,22 +200,10 @@
             </button>
 
         </header>
-
-
-
-        <!-- =================================================
-             CONVERSACIÓN
-        ================================================== -->
-
         <section
             class="conversation"
             id="conversation"
         >
-
-
-            <!-- =================================================
-                 WELCOME
-            ================================================== -->
 
             <div
                 class="welcome"
@@ -292,11 +229,6 @@
                     Habla con ApexAi. Pregunta, crea,
                     organiza o simplemente conversa.
                 </p>
-
-
-                <!-- =================================================
-                     PROMPTS
-                ================================================== -->
 
                 <div class="prompt-grid">
 
@@ -402,36 +334,17 @@
                 </div>
 
             </div>
-
-
-            <!-- =================================================
-                 MENSAJES
-            ================================================== -->
-
             <div
                 class="messages"
                 id="messages"
             ></div>
 
         </section>
-
-
-
-        <!-- =================================================
-             COMPOSER
-        ================================================== -->
-
         <div class="composer-wrap">
-
-
-            <!-- ARCHIVO ADJUNTO -->
             <div
                 class="attachment-preview"
                 id="attachmentPreview"
             ></div>
-
-
-            <!-- CAJA DE MENSAJE -->
             <div
                 class="composer"
                 id="composer"
@@ -447,9 +360,6 @@
 
 
                 <div class="composer-bottom">
-
-
-                    <!-- HERRAMIENTAS -->
                     <div class="composer-tools">
 
                         <label
@@ -469,9 +379,6 @@
                         </label>
 
                     </div>
-
-
-                    <!-- BOTÓN ENVIAR -->
                     <button
                         class="send-btn"
                         id="sendBtn"
@@ -487,12 +394,6 @@
                 </div>
 
             </div>
-
-
-            <!-- =================================================
-                 AVISO — FUERA DEL COMPOSER
-            ================================================== -->
-
             <span class="composer-hint">
                 ApexAi puede cometer errores. Comprueba la información importante.
             </span>
@@ -506,24 +407,10 @@
 </button>
 
 </div>
-
-
-
-<!-- =========================================================
-     SIDEBAR OVERLAY
-========================================================== -->
-
 <div
     class="sidebar-overlay"
     id="sidebarOverlay"
 ></div>
-
-
-
-<!-- =========================================================
-     CONTEXT MENU
-========================================================== -->
-
 <div
     class="context-menu"
     id="contextMenu"
@@ -550,13 +437,6 @@
     </button>
 
 </div>
-
-
-
-<!-- =========================================================
-     DELETE MODAL
-========================================================== -->
-
 <div
     class="modal-backdrop"
     id="modalBackdrop"
@@ -609,13 +489,6 @@
     </div>
 
 </div>
-
-
-
-<!-- =========================================================
-     SETTINGS MODAL
-========================================================== -->
-
 <div
     class="modal-backdrop"
     id="settingsBackdrop"
@@ -647,9 +520,6 @@
 
 
         <div class="settings-body">
-
-            <!-- TABS -->
-
             <nav class="settings-tabs" id="settingsTabs">
 
                 <button
@@ -689,15 +559,7 @@
                 </button>
 
             </nav>
-
-
-            <!-- PANELS -->
-
             <div class="settings-panels">
-
-
-                <!-- GENERAL -->
-
                 <section class="settings-panel active" data-panel="general">
 
                     <div class="settings-item">
@@ -743,10 +605,6 @@
                     </div>
 
                 </section>
-
-
-                <!-- PERSONALIZACIÓN -->
-
                 <section class="settings-panel" data-panel="personalization">
 
                     <div class="settings-item settings-item-column">
@@ -791,10 +649,6 @@
                     </button>
 
                 </section>
-
-
-                <!-- CUENTA -->
-
                 <section class="settings-panel" data-panel="account">
 
                     <form class="settings-item settings-item-column" id="settingsNameForm">
@@ -884,10 +738,6 @@
                     </div>
 
                 </section>
-
-
-                <!-- DATOS -->
-
                 <section class="settings-panel" data-panel="data">
 
                     <div class="settings-item">
@@ -933,27 +783,12 @@
     </div>
 
 </div>
-
-
-
-<!-- =========================================================
-     TOAST
-========================================================== -->
-
 <div
     class="toast"
     id="toast"
     role="status"
     aria-live="polite"
 ></div>
-
-
-
-<!-- =========================================================
-     JAVASCRIPT
-========================================================== -->
-
 <script src="/js/app.js"></script>
-
 </body>
 </html>

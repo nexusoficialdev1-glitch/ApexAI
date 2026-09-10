@@ -1,50 +1,21 @@
-/* =========================================================
-   NEXUSAI — APP.JS
-   ========================================================= */
-
 "use strict";
-
-/* =========================================================
-   CONFIG
-   ========================================================= */
 
 const STORAGE_KEY = "nexusai_chats";
 const THEME_KEY = "nexusai_theme";
-
-/*
- * Cuando tengas tu API/backend, cambia esta URL.
- *
- * Ejemplo:
- * const API_URL = "https://tu-api.com/api/chat";
- *
- * Por ahora NexusAI funciona en modo demo para que
- * toda la interfaz pueda probarse sin backend.
- */
 const API_URL = "https://nexusaia.onrender.com/api/chat";
-
-
-/* =========================================================
-   DOM
-   ========================================================= */
-
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => document.querySelectorAll(selector);
-
 const sidebar = $("#sidebar");
 const sidebarOverlay = $("#sidebarOverlay");
-
 const newChatBtn = $("#newChatBtn");
 const mobileNewChat = $("#mobileNewChat");
-
 const searchToggle = $("#searchToggle");
 const searchBox = $("#searchBox");
 const chatSearch = $("#chatSearch");
 const closeSearch = $("#closeSearch");
-
 const clearHistoryBtn = $("#clearHistoryBtn");
 const chatList = $("#chatList");
 const emptyHistory = $("#emptyHistory");
-
 const themeBtn = $("#themeBtn");
 const menuBtn = $("#menuBtn");
 
@@ -64,29 +35,18 @@ menuBtn?.addEventListener("click", () => {
 const conversation = $("#conversation");
 const welcome = $("#welcome");
 const messages = $("#messages");
-
 const messageInput = $("#messageInput");
 const sendBtn = $("#sendBtn");
-
 const fileInput = $("#fileInput");
 const attachmentPreview = $("#attachmentPreview");
-
 const contextMenu = $("#contextMenu");
-
 const modalBackdrop = $("#modalBackdrop");
 const cancelDelete = $("#cancelDelete");
 const confirmDelete = $("#confirmDelete");
-
 const toast = $("#toast");
-
 const userName = $("#userName");
 const userEmail = $("#userEmail");
 const userAvatar = $("#userAvatar");
-
-
-/* =========================================================
-   STATE
-   ========================================================= */
 
 let chats = [];
 let currentChatId = null;
@@ -95,10 +55,6 @@ let selectedChatId = null;
 let selectedFile = null;
 
 let isGenerating = false;
-
-/* =========================================================
-   IMAGE STORAGE — INDEXEDDB
-   ========================================================= */
 
 const IMAGE_DB_NAME = "nexusai_images";
 const IMAGE_DB_VERSION = 1;
@@ -172,11 +128,6 @@ function getImage(messageId) {
     });
 }
 
-
-/* =========================================================
-   INITIALIZE
-   ========================================================= */
-
 document.addEventListener("DOMContentLoaded", () => {
     loadTheme();
     loadChats();
@@ -189,11 +140,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     renderChatList();
 
-    /*
-     * Si la URL trae /c/<id>, abrimos ese chat.
-     * Si no existe (o no hay id), mostramos la
-     * pantalla inicial de bienvenida.
-     */
     const urlChatId = getChatIdFromUrl();
 
     if (urlChatId && chats.some((chat) => chat.id === urlChatId)) {
@@ -213,14 +159,8 @@ if (
     document.body.classList.add("sidebar-collapsed");
 }
 
-
-/* =========================================================
-   EVENTS
-   ========================================================= */
-
 function setupEvents() {
 
-    /* Nuevo chat */
     newChatBtn?.addEventListener("click", createNewChat);
 
     mobileNewChat?.addEventListener("click", () => {
@@ -228,14 +168,11 @@ function setupEvents() {
         closeMobileSidebar();
     });
 
-
-    /* Menú móvil */
     menuBtn?.addEventListener("click", openMobileSidebar);
 
     sidebarOverlay?.addEventListener("click", closeMobileSidebar);
 
 
-    /* Búsqueda */
     searchToggle?.addEventListener("click", openSearch);
 
     closeSearch?.addEventListener("click", closeSearchBox);
@@ -245,7 +182,6 @@ function setupEvents() {
     });
 
 
-    /* Atajo Ctrl + K */
     document.addEventListener("keydown", (event) => {
 
         if (
@@ -259,7 +195,6 @@ function setupEvents() {
     });
 
 
-    /* Mensaje */
     messageInput?.addEventListener("input", () => {
         autoResizeTextarea();
         updateSendButton();
@@ -278,19 +213,15 @@ function setupEvents() {
     });
 
 
-    /* Enviar */
     sendBtn?.addEventListener("click", sendMessage);
 
 
-    /* Archivo */
     fileInput?.addEventListener("change", handleFile);
 
 
-    /* Tema */
     themeBtn?.addEventListener("click", toggleTheme);
 
 
-    /* Borrar historial */
     clearHistoryBtn?.addEventListener("click", openDeleteModal);
 
     cancelDelete?.addEventListener("click", closeDeleteModal);
@@ -298,7 +229,6 @@ function setupEvents() {
     confirmDelete?.addEventListener("click", clearAllChats);
 
 
-    /* Cerrar menú contextual */
     document.addEventListener("click", (event) => {
 
         if (
@@ -310,11 +240,9 @@ function setupEvents() {
     });
 
 
-    /* Acciones del menú contextual */
     contextMenu?.addEventListener("click", handleContextAction);
 
 
-    /* ESC */
     document.addEventListener("keydown", (event) => {
 
         if (event.key === "Escape") {
@@ -325,11 +253,6 @@ function setupEvents() {
         }
     });
 }
-
-
-/* =========================================================
-   PROMPT CARDS
-   ========================================================= */
 
 function setupPromptCards() {
 
@@ -350,11 +273,6 @@ function setupPromptCards() {
         });
     });
 }
-
-
-/* =========================================================
-   CHAT CREATION
-   ========================================================= */
 
 function createNewChat() {
 
@@ -384,11 +302,6 @@ function createNewChat() {
     messageInput.focus();
 }
 
-
-/* =========================================================
-   SEND MESSAGE
-   ========================================================= */
-
 async function sendMessage() {
 
     if (isGenerating) return;
@@ -398,7 +311,6 @@ async function sendMessage() {
 
     if (!text && !file) return;
 
-    /* Crear chat automáticamente */
     if (!currentChatId) {
         createNewChat();
     }
@@ -407,10 +319,8 @@ async function sendMessage() {
 
     if (!chat) return;
 
-    /* Ocultar bienvenida */
     hideWelcome();
 
-    /* Mensaje del usuario */
     const userMessage = {
         id: generateId(),
         role: "user",
@@ -420,7 +330,6 @@ async function sendMessage() {
 
     chat.messages.push(userMessage);
 
-    /* Guardar imagen en IndexedDB */
     if (file) {
         try {
             await saveImage(userMessage.id, file);
@@ -436,7 +345,6 @@ async function sendMessage() {
         }
     }
 
-    /* Primer mensaje = título */
     if (
         chat.title === "Nueva conversación" ||
         !chat.title
@@ -449,7 +357,6 @@ async function sendMessage() {
     saveChats();
     renderChatList();
 
-    /* Mostrar imagen inmediatamente */
     let imageUrl = null;
 
     if (file) {
@@ -458,16 +365,13 @@ async function sendMessage() {
 
     appendMessage(userMessage, imageUrl);
 
-    /* Limpiar input */
     messageInput.value = "";
 
     autoResizeTextarea();
     updateSendButton();
 
-    /* Archivo */
     clearAttachment();
 
-    /* Generar respuesta */
     await generateResponse(
         chat,
         text,
@@ -475,19 +379,12 @@ async function sendMessage() {
     );
 }
 
-
-/* =========================================================
-   GENERATE RESPONSE
-   ========================================================= */
-
 async function generateResponse(chat, userText, file) {
 
     isGenerating = true;
 
     updateSendButton();
 
-
-    /* Mostrar typing */
     const typingElement = appendTyping();
 
 
@@ -560,11 +457,6 @@ const assistantMessage = {
     }
 }
 
-
-/* =========================================================
-   API REQUEST
-   ========================================================= */
-
 async function requestAPI(chat, text, file) {
     const payload = {
         message: text,
@@ -573,7 +465,6 @@ async function requestAPI(chat, text, file) {
         custom_instructions: getCustomInstructions()
     };
 
-    // Si hay una imagen, convertirla a Base64
     if (file) {
         if (!file.type.startsWith("image/")) {
             throw new Error("Solo se pueden adjuntar imágenes.");
@@ -585,14 +476,12 @@ async function requestAPI(chat, text, file) {
 
         const imageBase64 = await fileToBase64(file);
 
-        // Crear una copia del historial para no modificar el original
         payload.history = chat.messages.map(message => ({
             role: message.role,
             content: message.content,
             ...(message.images ? { images: message.images } : {})
         }));
 
-        // Agregar la imagen al último mensaje del usuario
         const lastMessage = payload.history[payload.history.length - 1];
 
         if (lastMessage && lastMessage.role === "user") {
@@ -627,8 +516,6 @@ return {
 
 }
 
-
-// Convierte un archivo a Base64
 function fileToBase64(file) {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -636,7 +523,6 @@ function fileToBase64(file) {
         reader.onload = () => {
             const result = reader.result;
 
-            // Ollama necesita solamente el Base64, sin "data:image/...;base64,"
             const base64 = result.split(",")[1];
 
             if (!base64) {
@@ -655,16 +541,7 @@ function fileToBase64(file) {
     });
 }
 
-
-/* =========================================================
-   API RESPONSE
-   ========================================================= */
-
 function extractAPIResponse(data) {
-
-    /*
-     * Admite diferentes formatos comunes de API.
-     */
 
     if (typeof data === "string") {
         return data;
@@ -710,11 +587,6 @@ function extractAPIResponse(data) {
 
     return "El servidor respondió, pero no se encontró contenido en la respuesta.";
 }
-
-
-/* =========================================================
-   DEMO RESPONSE
-   ========================================================= */
 
 function demoResponse(text) {
 
@@ -802,11 +674,6 @@ function demoResponse(text) {
     });
 }
 
-
-/* =========================================================
-   RENDER MESSAGE
-   ========================================================= */
-
 function appendMessage(message, imageUrl = null) {
 
     if (!messages) return;
@@ -850,7 +717,6 @@ function appendMessage(message, imageUrl = null) {
 
     content.appendChild(role);
 
-    /* Imagen */
     if (
         imageUrl &&
         message.role === "user"
@@ -875,7 +741,6 @@ function appendMessage(message, imageUrl = null) {
         content.appendChild(image);
     }
 
-    /* Texto */
     const text =
         document.createElement("div");
 
@@ -916,7 +781,6 @@ function appendMessage(message, imageUrl = null) {
     content.appendChild(gallery);
 }
 
-    /* Acciones del asistente */
     if (
         message.role === "assistant"
     ) {
@@ -967,17 +831,12 @@ function openImageViewer(imageUrl) {
     });
 }
 
-/* =========================================================
-   MESSAGE ACTIONS — COPIAR / LIKE / DISLIKE
-   ========================================================= */
-
 function createMessageActions(message) {
 
     const actions = document.createElement("div");
     actions.className = "message-actions";
 
 
-    /* Copiar */
     const copyBtn = document.createElement("button");
     copyBtn.type = "button";
     copyBtn.className = "message-action-btn";
@@ -989,8 +848,6 @@ function createMessageActions(message) {
         copyMessageText(message.content, copyBtn);
     });
 
-
-    /* Escuchar (Texto a voz) */
     const speakBtn = document.createElement("button");
     speakBtn.type = "button";
     speakBtn.className = "message-action-btn";
@@ -1002,11 +859,6 @@ function createMessageActions(message) {
         toggleSpeakMessage(message.content, speakBtn);
     });
 
-
-    /* Like */
-
-
-    /* Like */
     const likeBtn = document.createElement("button");
     likeBtn.type = "button";
     likeBtn.className = "message-action-btn message-like-btn";
@@ -1014,7 +866,6 @@ function createMessageActions(message) {
     likeBtn.setAttribute("aria-label", "Buena respuesta");
 
 
-    /* Dislike */
     const dislikeBtn = document.createElement("button");
     dislikeBtn.type = "button";
     dislikeBtn.className = "message-action-btn message-dislike-btn";
@@ -1070,8 +921,6 @@ function setMessageFeedback(message, value) {
 
     message.feedback = value;
 
-
-    /* Sincronizar con el objeto guardado en el chat (por si difiere la referencia) */
     const chat = getCurrentChat();
 
     if (chat) {
@@ -1125,10 +974,6 @@ function copyMessageText(content, button) {
         fallbackCopy(content, finish);
     }
 }
-
-/* =========================================================
-   TEXTO A VOZ (LEER MENSAJE)
-   ========================================================= */
 
 let currentSpeakUtterance = null;
 let currentSpeakButton = null;
@@ -1214,11 +1059,6 @@ function fallbackCopy(text, callback) {
     document.body.removeChild(textarea);
 }
 
-
-/* =========================================================
-   MESSAGE CONTENT — MARKDOWN
-   ========================================================= */
-
 function renderMessageContent(element, content) {
     if (!element) return;
 
@@ -1232,15 +1072,11 @@ function renderMessageContent(element, content) {
 
     const fragment = document.createDocumentFragment();
 
-    // Separar bloques de código primero
     const parts = content.split(/(```[\s\S]*?```)/g);
 
     parts.forEach(part => {
         if (!part.trim()) return;
 
-        // =========================
-        // BLOQUE DE CÓDIGO
-        // =========================
         if (part.startsWith("```")) {
             const match = part.match(/^```([\w+#.-]*)\n?([\s\S]*?)```$/);
 
@@ -1293,10 +1129,6 @@ function renderMessageContent(element, content) {
             }
         }
 
-        // =========================
-        // TEXTO NORMAL
-        // =========================
-
         const lines = part.split("\n");
         let i = 0;
 
@@ -1307,10 +1139,6 @@ function renderMessageContent(element, content) {
                 i++;
                 continue;
             }
-
-            // =========================
-            // HEADINGS
-            // =========================
 
             const heading = line.match(/^(#{1,6})\s+(.+)$/);
 
@@ -1325,19 +1153,11 @@ function renderMessageContent(element, content) {
                 continue;
             }
 
-            // =========================
-            // HORIZONTAL RULE
-            // =========================
-
             if (/^\s*([-*_])(?:\s*\1){2,}\s*$/.test(line)) {
                 fragment.appendChild(document.createElement("hr"));
                 i++;
                 continue;
             }
-
-            // =========================
-            // UNORDERED LIST
-            // =========================
 
             if (/^\s*[-*+]\s+/.test(line)) {
                 const ul = document.createElement("ul");
@@ -1361,10 +1181,6 @@ function renderMessageContent(element, content) {
                 continue;
             }
 
-            // =========================
-            // ORDERED LIST
-            // =========================
-
             if (/^\s*\d+\.\s+/.test(line)) {
                 const ol = document.createElement("ol");
 
@@ -1387,10 +1203,6 @@ function renderMessageContent(element, content) {
                 continue;
             }
 
-            // =========================
-            // BLOCKQUOTE
-            // =========================
-
             if (/^\s*>\s?/.test(line)) {
                 const quote = document.createElement("blockquote");
 
@@ -1412,10 +1224,6 @@ function renderMessageContent(element, content) {
                 continue;
             }
 
-            // =========================
-            // TABLA MARKDOWN
-            // =========================
-
             if (
                 i + 1 < lines.length &&
                 lines[i].includes("|") &&
@@ -1431,10 +1239,6 @@ function renderMessageContent(element, content) {
 
                 break;
             }
-
-            // =========================
-            // PÁRRAFO
-            // =========================
 
             const paragraph = document.createElement("p");
 
@@ -1465,21 +1269,10 @@ function renderMessageContent(element, content) {
     element.appendChild(fragment);
 }
 
-
-/* =========================================================
-   INLINE MARKDOWN
-   ========================================================= */
-
 function appendInlineMarkdown(parent, text) {
     if (!text) return;
 
     const fragment = document.createDocumentFragment();
-
-    /*
-     * Orden importante:
-     * código → enlaces → imágenes → negrita → cursiva →
-     * tachado → texto normal
-     */
 
     const regex =
         /(`[^`]+`)|(!?\[([^\]]+)\]\(([^)\s]+)(?:\s+"([^"]*)")?\))|(\*\*([^*]+)\*\*)|(__([^_]+)__)|(\*([^*]+)\*)|(_([^_]+)_)|(~~([^~]+)~~)|(https?:\/\/[^\s<]+)/g;
@@ -1496,10 +1289,6 @@ function appendInlineMarkdown(parent, text) {
             );
         }
 
-        // =========================
-        // INLINE CODE
-        // =========================
-
         if (match[1]) {
             const code = document.createElement("code");
 
@@ -1508,10 +1297,6 @@ function appendInlineMarkdown(parent, text) {
             fragment.appendChild(code);
         }
 
-        // =========================
-        // LINK / IMAGE
-        // =========================
-
         else if (match[2]) {
             const isImage = match[2].startsWith("!");
 
@@ -1519,7 +1304,6 @@ function appendInlineMarkdown(parent, text) {
             const url = match[4];
 
             if (isImage) {
-                // Evitar imágenes externas no deseadas
                 if (/^https?:\/\//i.test(url)) {
                     const img = document.createElement("img");
 
@@ -1542,10 +1326,6 @@ function appendInlineMarkdown(parent, text) {
             }
         }
 
-        // =========================
-        // BOLD **
-        // =========================
-
         else if (match[6]) {
             const strong = document.createElement("strong");
 
@@ -1553,10 +1333,6 @@ function appendInlineMarkdown(parent, text) {
 
             fragment.appendChild(strong);
         }
-
-        // =========================
-        // BOLD __
-        // =========================
 
         else if (match[8]) {
             const strong = document.createElement("strong");
@@ -1566,10 +1342,6 @@ function appendInlineMarkdown(parent, text) {
             fragment.appendChild(strong);
         }
 
-        // =========================
-        // ITALIC *
-        // =========================
-
         else if (match[10]) {
             const em = document.createElement("em");
 
@@ -1577,10 +1349,6 @@ function appendInlineMarkdown(parent, text) {
 
             fragment.appendChild(em);
         }
-
-        // =========================
-        // ITALIC _
-        // =========================
 
         else if (match[12]) {
             const em = document.createElement("em");
@@ -1590,10 +1358,6 @@ function appendInlineMarkdown(parent, text) {
             fragment.appendChild(em);
         }
 
-        // =========================
-        // STRIKETHROUGH
-        // =========================
-
         else if (match[14]) {
             const del = document.createElement("del");
 
@@ -1601,10 +1365,6 @@ function appendInlineMarkdown(parent, text) {
 
             fragment.appendChild(del);
         }
-
-        // =========================
-        // URL AUTOMÁTICA
-        // =========================
 
         else if (match[16]) {
             const link = document.createElement("a");
@@ -1628,11 +1388,6 @@ function appendInlineMarkdown(parent, text) {
 
     parent.appendChild(fragment);
 }
-
-
-/* =========================================================
-   MARKDOWN TABLE
-   ========================================================= */
 
 function renderMarkdownTable(lines) {
     const table = document.createElement("table");
@@ -1692,11 +1447,6 @@ function parseTableRow(line) {
 
     return line.split("|");
 }
-
-
-/* =========================================================
-   TYPING
-   ========================================================= */
 
 function appendTyping() {
 
@@ -1765,11 +1515,6 @@ function appendTyping() {
     return article;
 }
 
-
-/* =========================================================
-   CHAT DISPLAY
-   ========================================================= */
-
 async function showChat(chat) {
 
     currentChatId = chat.id;
@@ -1833,11 +1578,6 @@ function hideWelcome() {
         welcome.style.display = "none";
     }
 }
-
-
-/* =========================================================
-   CHAT LIST
-   ========================================================= */
 
 function renderChatList(filter = "") {
 
@@ -1968,11 +1708,6 @@ function renderChatList(filter = "") {
     });
 }
 
-
-/* =========================================================
-   OPEN CHAT
-   ========================================================= */
-
 function openChat(id, options = {}) {
 
     const chat =
@@ -1994,11 +1729,6 @@ function openChat(id, options = {}) {
 
     messageInput.focus();
 }
-
-
-/* =========================================================
-   CONTEXT MENU
-   ========================================================= */
 
 function openContextMenu(
     event,
@@ -2102,11 +1832,6 @@ function handleContextAction(event) {
     closeContextMenu();
 }
 
-
-/* =========================================================
-   RENAME CHAT
-   ========================================================= */
-
 function renameChat(id) {
 
     const chat =
@@ -2155,11 +1880,6 @@ function renameChat(id) {
     showToast("Conversación renombrada");
 }
 
-
-/* =========================================================
-   DELETE CHAT
-   ========================================================= */
-
 function deleteChat(id) {
 
     const index =
@@ -2191,11 +1911,6 @@ function deleteChat(id) {
 
     showToast("Conversación eliminada");
 }
-
-
-/* =========================================================
-   DELETE ALL
-   ========================================================= */
 
 function openDeleteModal() {
 
@@ -2236,11 +1951,6 @@ function clearAllChats() {
 
     showToast("Historial eliminado");
 }
-
-
-/* =========================================================
-   SEARCH
-   ========================================================= */
 
 function openSearch() {
 
@@ -2284,11 +1994,6 @@ function closeSearchBox() {
     renderChatList();
 }
 
-
-/* =========================================================
-   MOBILE SIDEBAR
-   ========================================================= */
-
 function openMobileSidebar() {
 
     sidebar?.classList.add(
@@ -2311,11 +2016,6 @@ function closeMobileSidebar() {
         "active"
     );
 }
-
-
-/* =========================================================
-   THEME
-   ========================================================= */
 
 function loadTheme() {
 
@@ -2410,10 +2110,6 @@ function updateThemeIcon(isDark) {
             : "fa-solid fa-moon";
 }
 
-
-/* =========================================================
-   FILES
-   ========================================================= */
 function handleFile(event) {
     const file = event.target.files?.[0];
 
@@ -2526,11 +2222,6 @@ function clearAttachment() {
     }
 }
 
-
-/* =========================================================
-   TEXTAREA
-   ========================================================= */
-
 function autoResizeTextarea() {
 
     if (!messageInput) return;
@@ -2561,11 +2252,6 @@ function updateSendButton() {
     sendBtn.disabled = (!hasText && !hasFile) || isGenerating;
 }
 
-
-/* =========================================================
-   SCROLL
-   ========================================================= */
-
 function scrollToBottom() {
 
     if (!conversation) return;
@@ -2582,11 +2268,6 @@ function scrollToBottom() {
 
     });
 }
-
-
-/* =========================================================
-   STORAGE
-   ========================================================= */
 
 function loadChats() {
 
@@ -2644,11 +2325,6 @@ function saveChats() {
     }
 }
 
-
-/* =========================================================
-   HELPERS
-   ========================================================= */
-
 function getCurrentChat() {
 
     return chats.find(
@@ -2656,11 +2332,6 @@ function getCurrentChat() {
             chat.id === currentChatId
     );
 }
-
-
-/* =========================================================
-   URL DEL CHAT (/c/<id>)
-   ========================================================= */
 
 function getChatIdFromUrl() {
 
@@ -2707,7 +2378,6 @@ function generateId() {
         return crypto.randomUUID();
     }
 
-    // Alternativa por si el navegador no soporta crypto.randomUUID
     return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
         /[xy]/g,
         (c) => {
@@ -2766,16 +2436,8 @@ function getUserInitial() {
         .toUpperCase();
 }
 
-/* =========================================================
-   USER AUTH
-========================================================= */
-
 const AUTH_API = "https://nexus-ai-api-iwqr.onrender.com/api";
 
-// Guarda/lee el token en localStorage. Esto evita depender
-// solo de la cookie cross-site, que Chrome/Firefox/Safari
-// pueden bloquear por ser de "tercero" (frontend y backend
-// están en dominios distintos: netlify.app vs onrender.com).
 function getAuthToken() {
     return localStorage.getItem("nexusai_token");
 }
@@ -2792,8 +2454,6 @@ async function loadUser() {
     const userParam = params.get("user");
     const tokenParam = params.get("token");
 
-    // Si venimos de la redirección de Google OAuth, el token
-    // llega por query string: lo guardamos y limpiamos la URL.
     if (tokenParam) {
         setAuthToken(tokenParam);
 
@@ -2809,7 +2469,6 @@ async function loadUser() {
 
     const token = getAuthToken();
 
-    // Sin token guardado: no hay sesión, directo al login.
     if (!token) {
         window.location.href = "index.html";
         return;
@@ -2838,7 +2497,6 @@ async function loadUser() {
 
     console.error("AUTH /ME ERROR:", response.status, errorData);
 
-    // No hay sesión válida: fuera de aquí, al login.
     localStorage.removeItem("nexusai_token");
     localStorage.removeItem("nexusai_user");
     window.location.href = "index.html";
@@ -2869,7 +2527,6 @@ async function loadUser() {
                 (user.name || "U").charAt(0).toUpperCase();
         }
 
-        // Guardar datos públicos del usuario
         localStorage.setItem(
             "nexusai_user",
             JSON.stringify({
@@ -2883,11 +2540,6 @@ async function loadUser() {
         console.error("Error cargando usuario:", error);
     }
 }
-
-
-/* =========================================================
-   TOAST
-   ========================================================= */
 
 let toastTimer = null;
 
@@ -2921,11 +2573,6 @@ function showToast(message) {
         }, 2200);
 }
 
-
-/* =========================================================
-   WINDOW RESIZE
-   ========================================================= */
-
 window.addEventListener(
     "resize",
     () => {
@@ -2937,11 +2584,6 @@ window.addEventListener(
         }
     }
 );
-
-
-/* =========================================================
-   CLOSE MODAL BY BACKDROP
-   ========================================================= */
 
 modalBackdrop?.addEventListener(
     "click",
@@ -2956,11 +2598,6 @@ modalBackdrop?.addEventListener(
     }
 );
 
-
-/* =========================================================
-   NEXUSAI READY
-   ========================================================= */
-
 console.log(
     "%cApexAI",
     "color:#2563eb;font-size:20px;font-weight:700;"
@@ -2969,10 +2606,6 @@ console.log(
 console.log(
     "ApexAi frontend inicializado correctamente."
 );
-
-/* =========================================
-   SIDEBAR PC
-========================================= */
 
 const desktopSidebarToggle =
     document.getElementById("desktopSidebarToggle");
@@ -3006,9 +2639,6 @@ if (desktopSidebarToggle) {
     });
 }
 
-
-/* Recuperar estado */
-
 if (
     window.innerWidth >= 769 &&
     localStorage.getItem(
@@ -3021,11 +2651,6 @@ if (
     );
 }
 
-
-/* =========================================================
-   MENÚ DE USUARIO (⋯) Y AJUSTES
-   ========================================================= */
-
 const SETTINGS_KEY = "nexusai_settings";
 
 const userMoreBtn = $("#userMoreBtn");
@@ -3037,17 +2662,14 @@ const closeSettingsBtn = $("#closeSettings");
 const settingsTabs = $("#settingsTabs");
 const settingsPanels = $$(".settings-panel");
 
-// General
 const settingsThemeSelect = $("#settingsThemeSelect");
 const settingsLangSelect = $("#settingsLangSelect");
 const settingsPromptCards = $("#settingsPromptCards");
 
-// Personalización
 const settingsNickname = $("#settingsNickname");
 const settingsCustomInstructions = $("#settingsCustomInstructions");
 const savePersonalizationBtn = $("#savePersonalizationBtn");
 
-// Cuenta
 const settingsNameForm = $("#settingsNameForm");
 const settingsName = $("#settingsName");
 const settingsNameBtn = $("#settingsNameBtn");
@@ -3059,7 +2681,6 @@ const settingsPasswordBtn = $("#settingsPasswordBtn");
 
 const deleteAccountBtn = $("#deleteAccountBtn");
 
-// Datos
 const exportChatsBtn = $("#exportChatsBtn");
 const deleteAllChatsFromSettingsBtn = $("#deleteAllChatsFromSettingsBtn");
 
@@ -3087,9 +2708,6 @@ function getCustomInstructions() {
     };
 }
 
-
-// --- Abrir / cerrar menú (⋯) ---
-
 userMoreBtn?.addEventListener("click", (event) => {
     event.stopPropagation();
     userMenu?.classList.toggle("active");
@@ -3104,9 +2722,6 @@ document.addEventListener("click", (event) => {
         userMenu.classList.remove("active");
     }
 });
-
-
-// --- Acciones del menú ---
 
 userMenu?.addEventListener("click", (event) => {
 
@@ -3123,9 +2738,6 @@ userMenu?.addEventListener("click", (event) => {
         handleLogout();
     }
 });
-
-
-// --- Pestañas ---
 
 settingsTabs?.addEventListener("click", (event) => {
 
@@ -3146,9 +2758,6 @@ settingsTabs?.addEventListener("click", (event) => {
     });
 });
 
-
-// --- Abrir / cerrar modal ---
-
 function openSettingsModal() {
 
     const savedUser = JSON.parse(
@@ -3157,7 +2766,6 @@ function openSettingsModal() {
 
     const settings = getSettings();
 
-    // General
     const isDark =
         document.documentElement.getAttribute("data-theme") === "dark";
 
@@ -3167,13 +2775,11 @@ function openSettingsModal() {
         settingsPromptCards.checked = settings.showPromptCards !== false;
     }
 
-    // Personalización
     if (settingsNickname) settingsNickname.value = settings.nickname || "";
     if (settingsCustomInstructions) {
         settingsCustomInstructions.value = settings.instructions || "";
     }
 
-    // Cuenta
     if (settingsName) {
         settingsName.value =
             savedUser?.name ||
@@ -3198,11 +2804,6 @@ settingsBackdrop?.addEventListener("click", (event) => {
         closeSettingsModal();
     }
 });
-
-
-/* =========================================================
-   GENERAL
-   ========================================================= */
 
 settingsThemeSelect?.addEventListener("change", () => {
 
@@ -3233,11 +2834,6 @@ settingsPromptCards?.addEventListener("change", () => {
     }
 });
 
-
-/* =========================================================
-   PERSONALIZACIÓN
-   ========================================================= */
-
 savePersonalizationBtn?.addEventListener("click", () => {
 
     saveSettings({
@@ -3247,11 +2843,6 @@ savePersonalizationBtn?.addEventListener("click", () => {
 
     showToast("Personalización guardada");
 });
-
-
-/* =========================================================
-   CUENTA
-   ========================================================= */
 
 settingsNameForm?.addEventListener("submit", async (event) => {
 
@@ -3406,11 +2997,6 @@ deleteAccountBtn?.addEventListener("click", async () => {
     }
 });
 
-
-/* =========================================================
-   DATOS
-   ========================================================= */
-
 exportChatsBtn?.addEventListener("click", () => {
 
     if (!chats || chats.length === 0) {
@@ -3440,9 +3026,6 @@ deleteAllChatsFromSettingsBtn?.addEventListener("click", () => {
     openDeleteModal();
 });
 
-
-// --- Cerrar sesión ---
-
 async function handleLogout() {
 
     const token = getAuthToken();
@@ -3465,11 +3048,8 @@ async function handleLogout() {
     localStorage.removeItem("nexusai_token");
     localStorage.removeItem("nexusai_user");
 
-    window.location.href = "/index.html";
+    window.location.href = "index.html";
 }
-
-
-// --- Aplicar preferencia de tarjetas de inicio al cargar ---
 
 (function applyStoredGeneralSettings() {
     const settings = getSettings();

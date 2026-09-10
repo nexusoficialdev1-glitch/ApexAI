@@ -1,6 +1,5 @@
 const API_URL = "https://nexus-ai-api-iwqr.onrender.com/api";
 
-// Procesar autenticación OAuth (GitHub)
 (function handleOAuthCallback() {
     const params = new URLSearchParams(window.location.search);
 
@@ -29,13 +28,6 @@ const API_URL = "https://nexus-ai-api-iwqr.onrender.com/api";
     }
 })();
 
-
-/*
-=========================================
-YA HAY SESIÓN ACTIVA — REDIRIGIR A app.html
-=========================================
-*/
-
 (async function redirectIfLoggedIn() {
 
     const token = localStorage.getItem("nexusai_token");
@@ -60,8 +52,6 @@ YA HAY SESIÓN ACTIVA — REDIRIGIR A app.html
         if (response.ok && data.success) {
             window.location.href = "app.html";
         } else {
-            // Token inválido/expirado: lo limpiamos para
-            // que no se quede intentando en cada visita.
             localStorage.removeItem("nexusai_token");
         }
 
@@ -78,13 +68,6 @@ YA HAY SESIÓN ACTIVA — REDIRIGIR A app.html
 
         const registerForm =
             document.getElementById("registerForm");
-
-
-        /*
-        =========================================
-        CAMBIAR ENTRE LOGIN / REGISTRO
-        =========================================
-        */
 
         function showLogin() {
 
@@ -103,13 +86,6 @@ YA HAY SESIÓN ACTIVA — REDIRIGIR A app.html
 
         }
 
-
-        /*
-        =========================================
-        MOSTRAR CONTRASEÑA
-        =========================================
-        */
-
         function togglePassword(id, button) {
     const input = document.getElementById(id);
     const icon = button.querySelector("i");
@@ -126,13 +102,6 @@ YA HAY SESIÓN ACTIVA — REDIRIGIR A app.html
         icon.classList.add("fa-eye");
     }
 }
-
-
-        /*
-        =========================================
-        TOAST
-        =========================================
-        */
 
         let toastTimer;
 
@@ -157,13 +126,6 @@ YA HAY SESIÓN ACTIVA — REDIRIGIR A app.html
             }, 3000);
 
         }
-
-
-        /*
-        =========================================
-        LOGIN
-        =========================================
-        */
 
         loginForm.addEventListener(
             "submit",
@@ -232,10 +194,6 @@ YA HAY SESIÓN ACTIVA — REDIRIGIR A app.html
                         return;
 
                     }
-
-                    // Guardamos el token para enviarlo como
-                    // Authorization: Bearer en cada petición
-                    // (evita depender solo de la cookie cross-site).
                     localStorage.setItem(
                         "nexusai_token",
                         data.token
@@ -261,13 +219,6 @@ YA HAY SESIÓN ACTIVA — REDIRIGIR A app.html
 
             }
         );
-
-
-        /*
-        =========================================
-        REGISTRO
-        =========================================
-        */
 
         registerForm.addEventListener(
             "submit",
@@ -403,13 +354,6 @@ YA HAY SESIÓN ACTIVA — REDIRIGIR A app.html
             }
         );
 
-
-        /*
-        =========================================
-        RECUPERAR CONTRASEÑA
-        =========================================
-        */
-
         function forgotPassword() {
 
             showToast(
@@ -417,13 +361,6 @@ YA HAY SESIÓN ACTIVA — REDIRIGIR A app.html
             );
 
         }
-
-
-        /*
-        =========================================
-        GOOGLE / GITHUB
-        =========================================
-        */
 
         function socialLogin(provider) {
 
