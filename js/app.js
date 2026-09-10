@@ -1281,7 +1281,7 @@ function appendInlineMarkdown(parent, text) {
     const fragment = document.createDocumentFragment();
 
     const regex =
-        /(\*\*.*?\*\*|\*.*?\*|`.*?`|\[.*?\]\(.*?\))/g;
+        /(\*\*.*?\*\*|\*.*?\*|`.*?`|\[.*?\]\(.*?\)|https?:\/\/[^\s<]+)/g;
 
     let lastIndex = 0;
     let match;
@@ -1334,8 +1334,8 @@ function appendInlineMarkdown(parent, text) {
             fragment.appendChild(code);
         }
 
-        // Enlace
-        else {
+        // Enlace Markdown
+        else if (token.startsWith("[")) {
             const linkMatch =
                 token.match(/^\[(.*?)\]\((.*?)\)$/);
 
@@ -1349,6 +1349,21 @@ function appendInlineMarkdown(parent, text) {
 
                 fragment.appendChild(a);
             }
+        }
+
+        // URL normal
+        else if (
+            token.startsWith("http://") ||
+            token.startsWith("https://")
+        ) {
+            const a = document.createElement("a");
+
+            a.textContent = token;
+            a.href = token;
+            a.target = "_blank";
+            a.rel = "noopener noreferrer";
+
+            fragment.appendChild(a);
         }
 
         lastIndex =
